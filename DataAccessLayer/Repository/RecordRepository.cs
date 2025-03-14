@@ -3,7 +3,7 @@ using BusinessObjects.Enum;
 
 namespace DataAccessLayer.Repository
 {
-    public class RecordRepository
+    public class RecordRepository: IGenericRepository<Record>
     {
         public IEnumerable<Record> GetAll()
         {

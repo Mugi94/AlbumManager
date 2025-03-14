@@ -2,7 +2,7 @@ using BusinessObjects.Entity;
 
 namespace DataAccessLayer.Repository
 {
-    public class TrackRepository
+    public class TrackRepository: IGenericRepository<Track>
     {
         public IEnumerable<Track> GetAll()
         {
