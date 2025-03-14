@@ -1,15 +1,14 @@
 using BusinessObjects.Entity;
-using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
-    public class TrackManager
+    public class TrackManager: ITrackManager
     {
-        private readonly TrackRepository _trackRepository;
+        private readonly IGenericRepository<Track> _trackRepository;
 
-        public TrackManager()
+        public TrackManager(IGenericRepository<Track> trackRepository)
         {
-            _trackRepository = new TrackRepository();
+            _trackRepository = trackRepository;
         }
 
         public IEnumerable<Track> GetTracks()

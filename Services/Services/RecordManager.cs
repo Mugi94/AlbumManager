@@ -1,16 +1,15 @@
 using BusinessObjects.Entity;
 using BusinessObjects.Enum;
-using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
-    public class RecordManager
+    public class RecordManager: IRecordManager
     {
-        private readonly RecordRepository _recordRepository;
+        private readonly IGenericRepository<Record> _recordRepository;
 
-        public RecordManager()
+        public RecordManager(IGenericRepository<Record> recordRepository)
         {
-            _recordRepository = new RecordRepository();
+            _recordRepository = recordRepository;
         }
 
         public IEnumerable<Record> GetRecords()

@@ -1,15 +1,14 @@
 using BusinessObjects.Entity;
-using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
-    public class ArtistManager
+    public class ArtistManager: IArtistManager
     {
-        private readonly ArtistRepository _artistRepository;
+        private readonly IGenericRepository<Artist> _artistRepository;
 
-        public ArtistManager()
+        public ArtistManager(IGenericRepository<Artist> artistRepository)
         {
-            _artistRepository = new ArtistRepository();
+            _artistRepository = artistRepository;
         }
 
         public IEnumerable<Artist> GetArtists()
