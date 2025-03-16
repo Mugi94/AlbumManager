@@ -1,6 +1,8 @@
 ﻿using BusinessObjects.Entity;
 using BusinessObjects.Enum;
+using DataAccessLayer.Contexts;
 using DataAccessLayer.Repository;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Services.Services;
@@ -41,15 +43,19 @@ namespace AlbumManager.App
         private static IHost CreateHostBuilder()
         {
             return Host.CreateDefaultBuilder()
-                .ConfigureServices(services =>
+                .ConfigureServices((context, services) =>
                 {
-                    services.AddSingleton<IGenericRepository<Artist>, ArtistRepository>();
-                    services.AddSingleton<IGenericRepository<Record>, RecordRepository>();
-                    services.AddSingleton<IGenericRepository<Track>, TrackRepository>();
+                    services.AddScoped<IGenericRepository<Artist>, ArtistRepository>();
+                    services.AddScoped<IGenericRepository<Record>, RecordRepository>();
+                    services.AddScoped<IGenericRepository<Track>, TrackRepository>();
 
-                    services.AddSingleton<IArtistManager, ArtistManager>();
-                    services.AddSingleton<IRecordManager, RecordManager>();
-                    services.AddSingleton<ITrackManager, TrackManager>();
+                    services.AddScoped<IArtistManager, ArtistManager>();
+                    services.AddScoped<IRecordManager, RecordManager>();
+                    services.AddScoped<ITrackManager, TrackManager>();
+
+                    services.AddDbContext<DiscographyContext>(options =>
+                        options.UseNpgsql("Host=localhost;Port=5432;Database=AlbumManagerDb;Username=postgres;Password=root")
+                    );
                 })
                 .Build();
         }

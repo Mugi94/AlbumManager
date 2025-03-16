@@ -1,22 +1,40 @@
 using BusinessObjects.Entity;
-using BusinessObjects.Enum;
+using DataAccessLayer.Contexts;
 
 namespace DataAccessLayer.Repository
 {
     public class RecordRepository: IGenericRepository<Record>
     {
+        private readonly DiscographyContext _discographyContext;
+        
+        public RecordRepository(DiscographyContext albumContext)
+        {
+            _discographyContext = albumContext;
+        }
+
         public IEnumerable<Record> GetAll()
         {
-            return [
-                new Record(1, "Title", new DateTime(2000, 1, 1), TypeRecord.Album, [], []),
-                new Record(2, "Title", new DateTime(2020, 6, 29), TypeRecord.EP, [], []),
-                new Record(3, "Title", new DateTime(2025, 3, 13), TypeRecord.Single, [], [])
-            ];
+            return _discographyContext.Records;
         }
 
         public Record Get(int id)
         {
-            return new Record(1, "Title", new DateTime(2024, 12, 31), TypeRecord.Album, [], []);
+            return _discographyContext.Records.First(record => record.Id == id);
+        }
+
+        public Record Add(Record record)
+        {
+            _discographyContext.Records.Add(record);
+            _discographyContext.SaveChanges();
+            return record;
+        }
+
+        public Record Delete(int id)
+        {
+            var record = _discographyContext.Records.First(record => record.Id == id);
+            _discographyContext.Remove(record);
+            _discographyContext.SaveChanges();
+            return record;
         }
     }
 }

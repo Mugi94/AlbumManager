@@ -1,5 +1,6 @@
 using BusinessObjects.Entity;
 using BusinessObjects.Enum;
+using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
