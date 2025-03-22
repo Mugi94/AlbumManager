@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Servic
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Test", "Services.Test\Services.Test.csproj", "{BE6B321D-F97E-4818-94A7-FD68BD37ACA1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumManager.Hosting", "AlbumManager.Hosting\AlbumManager.Hosting.csproj", "{6EF80D76-41C7-4E2E-89F0-031C5BA0BF57}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{BE6B321D-F97E-4818-94A7-FD68BD37ACA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE6B321D-F97E-4818-94A7-FD68BD37ACA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE6B321D-F97E-4818-94A7-FD68BD37ACA1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EF80D76-41C7-4E2E-89F0-031C5BA0BF57}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EF80D76-41C7-4E2E-89F0-031C5BA0BF57}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EF80D76-41C7-4E2E-89F0-031C5BA0BF57}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EF80D76-41C7-4E2E-89F0-031C5BA0BF57}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

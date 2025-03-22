@@ -1,0 +1,6 @@
+@AlbumManager.Hosting_HostAddress = http://localhost:5221
+
+GET {{AlbumManager.Hosting_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
