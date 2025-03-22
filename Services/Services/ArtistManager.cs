@@ -26,5 +26,15 @@ namespace Services.Services
         {
             return _artistRepository.Get(id);
         }
+
+        public Artist AddArtist(Artist artist)
+        {
+            return _artistRepository.Add(artist);
+        }
+
+        public Artist DeleteArtist(int id)
+        {
+            return _artistRepository.Delete(id);
+        }
     }
 }

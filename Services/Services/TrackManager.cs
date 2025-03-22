@@ -26,5 +26,15 @@ namespace Services.Services
         {
             return _trackRepository.Get(id);
         }
+
+        public Track AddTrack(Track track)
+        {
+            return _trackRepository.Add(track);
+        }
+
+        public Track DeleteTrack(int id)
+        {
+            return _trackRepository.Delete(id);
+        }
     }
 }

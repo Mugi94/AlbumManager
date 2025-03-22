@@ -7,5 +7,7 @@ namespace Services.Services
         public IEnumerable<Artist> GetArtists();
         public IEnumerable<Artist> GetArtists(int year);
         public Artist FindArtist(int id);
+        public Artist AddArtist(Artist artist);
+        public Artist DeleteArtist(int id);
     }
 }
