@@ -11,7 +11,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DataAccessLayer.Migrations
 {
-    [DbContext(typeof(DiscographyContext))]
+    [DbContext(typeof(MusicContext))]
     [Migration("20250316111959_FixRelations")]
     partial class FixRelations
     {

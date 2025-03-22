@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace DataAccessLayer.Migrations
 {
-    [DbContext(typeof(DiscographyContext))]
-    partial class DiscographyContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(MusicContext))]
+    partial class MusicContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("RecordsId");
 
-                    b.ToTable("ArtistRecord");
+                    b.ToTable("ArtistRecord", (string)null);
                 });
 
             modelBuilder.Entity("ArtistTrack", b =>
@@ -49,7 +49,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("TracksId");
 
-                    b.ToTable("ArtistTrack");
+                    b.ToTable("ArtistTrack", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObjects.Entity.Artist", b =>
@@ -69,7 +69,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Artists");
+                    b.ToTable("Artists", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObjects.Entity.Record", b =>
@@ -92,7 +92,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Records");
+                    b.ToTable("Records", (string)null);
                 });
 
             modelBuilder.Entity("BusinessObjects.Entity.Track", b =>
@@ -112,7 +112,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tracks");
+                    b.ToTable("Tracks", (string)null);
                 });
 
             modelBuilder.Entity("RecordTrack", b =>
@@ -127,7 +127,7 @@ namespace DataAccessLayer.Migrations
 
                     b.HasIndex("TracksId");
 
-                    b.ToTable("RecordTrack");
+                    b.ToTable("RecordTrack", (string)null);
                 });
 
             modelBuilder.Entity("ArtistRecord", b =>

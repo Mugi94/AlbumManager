@@ -5,35 +5,35 @@ namespace DataAccessLayer.Repository
 {
     public class RecordRepository: IGenericRepository<Record>
     {
-        private readonly DiscographyContext _discographyContext;
+        private readonly MusicContext _musicContext;
         
-        public RecordRepository(DiscographyContext albumContext)
+        public RecordRepository(MusicContext albumContext)
         {
-            _discographyContext = albumContext;
+            _musicContext = albumContext;
         }
 
         public IEnumerable<Record> GetAll()
         {
-            return _discographyContext.Records;
+            return _musicContext.Records;
         }
 
         public Record Get(int id)
         {
-            return _discographyContext.Records.First(record => record.Id == id);
+            return _musicContext.Records.First(record => record.Id == id);
         }
 
         public Record Add(Record record)
         {
-            _discographyContext.Records.Add(record);
-            _discographyContext.SaveChanges();
+            _musicContext.Records.Add(record);
+            _musicContext.SaveChanges();
             return record;
         }
 
         public Record Delete(int id)
         {
-            var record = _discographyContext.Records.First(record => record.Id == id);
-            _discographyContext.Remove(record);
-            _discographyContext.SaveChanges();
+            var record = _musicContext.Records.First(record => record.Id == id);
+            _musicContext.Remove(record);
+            _musicContext.SaveChanges();
             return record;
         }
     }

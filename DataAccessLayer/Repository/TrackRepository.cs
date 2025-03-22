@@ -5,34 +5,34 @@ namespace DataAccessLayer.Repository
 {
     public class TrackRepository: IGenericRepository<Track>
     {
-        private readonly DiscographyContext _discographyContext;
+        private readonly MusicContext _musicContext;
 
-        public TrackRepository(DiscographyContext albumContext)
+        public TrackRepository(MusicContext albumContext)
         {
-            _discographyContext = albumContext;
+            _musicContext = albumContext;
         }
         public IEnumerable<Track> GetAll()
         {
-            return _discographyContext.Tracks;
+            return _musicContext.Tracks;
         }
 
         public Track Get(int id)
         {
-            return _discographyContext.Tracks.First(track => track.Id == id);
+            return _musicContext.Tracks.First(track => track.Id == id);
         }
 
         public Track Add(Track track)
         {
-            _discographyContext.Tracks.Add(track);
-            _discographyContext.SaveChanges();
+            _musicContext.Tracks.Add(track);
+            _musicContext.SaveChanges();
             return track;
         }
 
         public Track Delete(int id)
         {
-            var track = _discographyContext.Tracks.First(track => track.Id == id);
-            _discographyContext.Remove(track);
-            _discographyContext.SaveChanges();
+            var track = _musicContext.Tracks.First(track => track.Id == id);
+            _musicContext.Remove(track);
+            _musicContext.SaveChanges();
             return track;
         }
     }

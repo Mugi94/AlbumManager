@@ -5,35 +5,35 @@ namespace DataAccessLayer.Repository
 {
     public class ArtistRepository: IGenericRepository<Artist>
     {
-        private readonly DiscographyContext _discographyContext;
+        private readonly MusicContext _musicContext;
 
-        public ArtistRepository(DiscographyContext albumContext)
+        public ArtistRepository(MusicContext albumContext)
         {
-            _discographyContext = albumContext;
+            _musicContext = albumContext;
         }
 
         public IEnumerable<Artist> GetAll()
         {
-            return _discographyContext.Artists;
+            return _musicContext.Artists;
         }
 
         public Artist Get(int id)
         {
-            return _discographyContext.Artists.First(artist => artist.Id == id);
+            return _musicContext.Artists.First(artist => artist.Id == id);
         }
 
         public Artist Add(Artist artist)
         {
-            _discographyContext.Artists.Add(artist);
-            _discographyContext.SaveChanges();
+            _musicContext.Artists.Add(artist);
+            _musicContext.SaveChanges();
             return artist;
         }
 
         public Artist Delete(int id)
         {
-            var artist = _discographyContext.Artists.First(artist => artist.Id == id);
-            _discographyContext.Remove(artist);
-            _discographyContext.SaveChanges();
+            var artist = _musicContext.Artists.First(artist => artist.Id == id);
+            _musicContext.Remove(artist);
+            _musicContext.SaveChanges();
             return artist;
         }
     }

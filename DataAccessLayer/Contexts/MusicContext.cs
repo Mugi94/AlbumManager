@@ -3,13 +3,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Contexts
 {
-    public class DiscographyContext: DbContext
+    public class MusicContext: DbContext
     {
         public DbSet<Artist> Artists { get; set; }
         public DbSet<Record> Records { get; set; }
         public DbSet<Track> Tracks { get; set; }
         
-        public DiscographyContext(DbContextOptions<DiscographyContext> options) : base(options)
+        public MusicContext(DbContextOptions<MusicContext> options) : base(options)
         {
         }
     }

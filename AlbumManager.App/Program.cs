@@ -53,7 +53,7 @@ namespace AlbumManager.App
                     services.AddScoped<IRecordManager, RecordManager>();
                     services.AddScoped<ITrackManager, TrackManager>();
 
-                    services.AddDbContext<DiscographyContext>(options =>
+                    services.AddDbContext<MusicContext>(options =>
                         options.UseNpgsql("Host=localhost;Port=5432;Database=AlbumManagerDb;Username=postgres;Password=root")
                     );
                 })
