@@ -8,8 +8,9 @@ namespace BusinessObjects.Entity
         public string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public TypeRecord Type { get; set; }
-        public ICollection<Artist> Artists { get; set; }
-        public ICollection<Track> Tracks { get; set; }
+
+        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+        public ICollection<Track> Tracks { get; set; } = new List<Track>();
 
         public Record()
         {

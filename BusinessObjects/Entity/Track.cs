@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace BusinessObjects.Entity
 {
     public class Track: IEntity
@@ -5,8 +7,11 @@ namespace BusinessObjects.Entity
         public int Id { get; set; }
         public string Title { get; set; }
         public int Duration { get; set; }
-        public ICollection<Artist> Artists { get; set; }
-        public ICollection<Record> Records { get; set; }
+
+        public ICollection<Artist> Artists { get; set; } = new List<Artist>();
+
+        [JsonIgnore]
+        public ICollection<Record> Records { get; set; } = new List<Record>();
 
         public Track()
         {
