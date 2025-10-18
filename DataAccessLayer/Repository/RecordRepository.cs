@@ -24,6 +24,20 @@ namespace DataAccessLayer.Repository
 
         public Record Add(Record record)
         {
+            var artists = record.Artists
+            .Select(
+                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
+                ?? throw new InvalidOperationException($"{artist.Name} not existing")
+            ).ToList();
+
+            var tracks = record.Tracks.Select(
+                track => _musicContext.Tracks.FirstOrDefault(t => t.Id == track.Id)
+                ?? throw new InvalidOperationException($"{track.Title} not existing")
+            ).ToList();
+
+            record.Artists = artists;
+            record.Tracks = tracks;
+
             _musicContext.Records.Add(record);
             _musicContext.SaveChanges();
             return record;

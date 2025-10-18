@@ -23,6 +23,14 @@ namespace DataAccessLayer.Repository
 
         public Track Add(Track track)
         {
+            var artists = track.Artists
+            .Select(
+                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
+                ?? throw new InvalidOperationException($"{artist.Name} not existing")
+            ).ToList();
+
+            track.Artists = artists;
+
             _musicContext.Tracks.Add(track);
             _musicContext.SaveChanges();
             return track;
