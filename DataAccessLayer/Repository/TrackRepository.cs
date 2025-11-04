@@ -1,5 +1,6 @@
 using BusinessObjects.Entity;
 using DataAccessLayer.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repository
 {
@@ -13,12 +14,15 @@ namespace DataAccessLayer.Repository
         }
         public IEnumerable<Track> GetAll()
         {
-            return _musicContext.Tracks;
+            return _musicContext.Tracks
+                .Include(t => t.Artists);
         }
 
         public Track Get(int id)
         {
-            return _musicContext.Tracks.First(track => track.Id == id);
+            return _musicContext.Tracks
+                .Include(t => t.Artists)
+                .First(track => track.Id == id);
         }
 
         public Track Add(Track track)

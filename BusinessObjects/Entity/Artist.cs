@@ -1,5 +1,3 @@
-using System.Text.Json.Serialization;
-
 namespace BusinessObjects.Entity
 {
     public class Artist: IEntity
@@ -8,10 +6,7 @@ namespace BusinessObjects.Entity
         public string Name { get; set; }
         public int DebutYear { get; set; }
 
-        [JsonIgnore]
         public ICollection<Record> Records { get; set; } = new List<Record>();
-
-        [JsonIgnore]
         public ICollection<Track> Tracks { get; set; } = new List<Track>();
 
         public Artist()

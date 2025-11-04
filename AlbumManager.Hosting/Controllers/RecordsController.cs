@@ -1,5 +1,7 @@
+using AutoMapper;
 using BusinessObjects.Entity;
 using BusinessObjects.Enum;
+using DataAccessLayer.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 
@@ -10,10 +12,12 @@ namespace AlbumManager.Hosting.Controllers
     public class RecordsController : ControllerBase
     {
         private readonly IRecordManager _recordManager;
+        private readonly IMapper _mapper;
 
-        public RecordsController(IRecordManager recordManager)
+        public RecordsController(IRecordManager recordManager, IMapper mapper)
         {
             _recordManager = recordManager;
+            _mapper = mapper;
         }
 
         // GET : records
@@ -21,7 +25,7 @@ namespace AlbumManager.Hosting.Controllers
         public IActionResult GetRecords()
         {
             var records = _recordManager.GetRecords();
-            return Ok(records);
+            return Ok(records.Select(record => _mapper.Map<RecordDto>(record)));
         }
 
         // GET : records/{id}
@@ -34,7 +38,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(record);
+            return Ok(_mapper.Map<RecordDto>(record));
         }
 
         // GET : records/type/{type}
@@ -47,15 +51,16 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(records);
+            return Ok(records.Select(record => _mapper.Map<RecordDto>(record)));
         }
 
         // POST : records/add
         [HttpPost("add")]
-        public IActionResult AddRecord([FromBody] Record record)
+        public IActionResult AddRecord([FromBody] RecordDto recordDto)
         {
+            var record = _mapper.Map<Record>(recordDto);
             var newRecord = _recordManager.AddRecord(record);
-            return CreatedAtAction(nameof(GetRecord), new { id = newRecord.Id }, newRecord);
+            return CreatedAtAction(nameof(GetRecord), new { id = newRecord.Id }, _mapper.Map<RecordDto>(newRecord));
         }
 
         // POST : records/delete
@@ -68,7 +73,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(record);
+            return Ok(_mapper.Map<RecordDto>(record));
         }
     }
 }

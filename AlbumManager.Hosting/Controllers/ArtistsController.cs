@@ -1,4 +1,6 @@
+using AutoMapper;
 using BusinessObjects.Entity;
+using DataAccessLayer.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 
@@ -9,10 +11,12 @@ namespace AlbumManager.Hosting.Controllers
     public class ArtistsController : ControllerBase
     {
         private readonly IArtistManager _artistManager;
+        private readonly IMapper _mapper;
 
-        public ArtistsController(IArtistManager artistManager)
+        public ArtistsController(IArtistManager artistManager, IMapper mapper)
         {
             _artistManager = artistManager;
+            _mapper = mapper;
         }
 
         // GET : artists
@@ -20,7 +24,7 @@ namespace AlbumManager.Hosting.Controllers
         public IActionResult GetArtists()
         {
             var artists = _artistManager.GetArtists();
-            return Ok(artists);
+            return Ok(artists.Select(artist => _mapper.Map<ArtistDto>(artist)));
         }
 
         // GET : artists/{id}
@@ -33,7 +37,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(artist);
+            return Ok(_mapper.Map<ArtistDto>(artist));
         }
 
         // GET : artists/year/{year}
@@ -46,15 +50,16 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(artists);
+            return Ok(artists.Select(artist => _mapper.Map<ArtistDto>(artist)));
         }
 
         // POST : artists/add
         [HttpPost("add")]
-        public IActionResult AddArtist([FromBody] Artist artist)
+        public IActionResult AddArtist([FromBody] ArtistDto artistDto)
         {
+            var artist = _mapper.Map<Artist>(artistDto);
             var newArtist = _artistManager.AddArtist(artist);
-            return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id}, newArtist);
+            return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id}, _mapper.Map<ArtistDto>(newArtist));
         }
 
         // POST : artists/delete
@@ -67,7 +72,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(artist);
+            return Ok(_mapper.Map<ArtistDto>(artist));
         }
     }
 }

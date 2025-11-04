@@ -1,5 +1,6 @@
 using BusinessObjects.Entity;
 using DataAccessLayer.Contexts;
+using DataAccessLayer.DataTransferObject;
 using DataAccessLayer.Repository;
 using Microsoft.EntityFrameworkCore;
 using Services.Services;
@@ -21,6 +22,9 @@ builder.Services.AddScoped<IGenericRepository<Track>, TrackRepository>();
 builder.Services.AddScoped<IArtistManager, ArtistManager>();
 builder.Services.AddScoped<IRecordManager, RecordManager>();
 builder.Services.AddScoped<ITrackManager, TrackManager>();
+
+// Add AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 builder.Services.AddDbContext<MusicContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))

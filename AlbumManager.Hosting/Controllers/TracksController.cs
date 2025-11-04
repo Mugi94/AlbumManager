@@ -1,4 +1,6 @@
+using AutoMapper;
 using BusinessObjects.Entity;
+using DataAccessLayer.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 
@@ -6,13 +8,15 @@ namespace AlbumManager.Hosting.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TracksManager : ControllerBase
+    public class TracksController : ControllerBase
     {
         private readonly ITrackManager _trackManager;
+        private readonly IMapper _mapper;
 
-        public TracksManager(ITrackManager trackManager)
+        public TracksController(ITrackManager trackManager, IMapper mapper)
         {
             _trackManager = trackManager;
+            _mapper = mapper;
         }
 
         // GET : tracks
@@ -20,7 +24,7 @@ namespace AlbumManager.Hosting.Controllers
         public IActionResult GetTracks()
         {
             var tracks = _trackManager.GetTracks();
-            return Ok(tracks);
+            return Ok(tracks.Select(track => _mapper.Map<TrackDto>(track)));
         }
 
         // GET : tracks/{id}
@@ -33,15 +37,16 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(track);
+            return Ok(_mapper.Map<TrackDto>(track));
         }
 
         // POST : tracks/add
         [HttpPost("add")]
-        public IActionResult AddTrack([FromBody] Track track)
+        public IActionResult AddTrack([FromBody] TrackDto trackDto)
         {
+            var track = _mapper.Map<Track>(trackDto);
             var newTrack = _trackManager.AddTrack(track);
-            return CreatedAtAction(nameof(GetTrack), new { id = newTrack.Id }, newTrack);
+            return CreatedAtAction(nameof(GetTrack), new { id = newTrack.Id }, _mapper.Map<TrackDto>(newTrack));
         }
 
         // POST : tracks/delete
@@ -54,7 +59,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(track);
+            return Ok(_mapper.Map<TrackDto>(track));
         }
     }
 }
