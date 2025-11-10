@@ -40,8 +40,8 @@ namespace AlbumManager.Hosting.Controllers
             return Ok(_mapper.Map<TrackDto>(track));
         }
 
-        // POST : tracks/add
-        [HttpPost("add")]
+        // POST : tracks
+        [HttpPost()]
         public IActionResult AddTrack([FromBody] TrackDto trackDto)
         {
             var track = _mapper.Map<Track>(trackDto);
@@ -49,9 +49,9 @@ namespace AlbumManager.Hosting.Controllers
             return CreatedAtAction(nameof(GetTrack), new { id = newTrack.Id }, _mapper.Map<TrackDto>(newTrack));
         }
 
-        // POST : tracks/delete
-        [HttpPost("delete")]
-        public IActionResult DeleteTrack([FromBody] int id)
+        // DELETE : tracks
+        [HttpDelete("{id}")]
+        public IActionResult DeleteTrack(int id)
         {
             var track = _trackManager.DeleteTrack(id);
             if (track == null)

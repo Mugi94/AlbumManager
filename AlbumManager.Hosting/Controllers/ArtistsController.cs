@@ -21,9 +21,14 @@ namespace AlbumManager.Hosting.Controllers
 
         // GET : artists
         [HttpGet]
-        public IActionResult GetArtists()
+        public IActionResult GetArtists([FromQuery] int? year)
         {
             var artists = _artistManager.GetArtists();
+            if (year.HasValue)
+            {
+                artists = artists.Where(a => a.DebutYear == year.Value);
+            }
+            
             return Ok(artists.Select(artist => _mapper.Map<ArtistDto>(artist)));
         }
 
@@ -40,21 +45,8 @@ namespace AlbumManager.Hosting.Controllers
             return Ok(_mapper.Map<ArtistDto>(artist));
         }
 
-        // GET : artists/year/{year}
-        [HttpGet("year/{year}")]
-        public IActionResult GetArtistsByYear(int year)
-        {
-            var artists = _artistManager.GetArtists(year);
-            if (artists == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(artists.Select(artist => _mapper.Map<ArtistDto>(artist)));
-        }
-
-        // POST : artists/add
-        [HttpPost("add")]
+        // POST : artists
+        [HttpPost()]
         public IActionResult AddArtist([FromBody] ArtistDto artistDto)
         {
             var artist = _mapper.Map<Artist>(artistDto);
@@ -62,9 +54,9 @@ namespace AlbumManager.Hosting.Controllers
             return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id}, _mapper.Map<ArtistDto>(newArtist));
         }
 
-        // POST : artists/delete
-        [HttpPost("delete")]
-        public IActionResult DeleteArtist([FromBody] int id)
+        // DELETE : artists
+        [HttpDelete("{id}")]
+        public IActionResult DeleteArtist(int id)
         {
             var artist = _artistManager.DeleteArtist(id);
             if (artist == null)

@@ -22,9 +22,14 @@ namespace AlbumManager.Hosting.Controllers
 
         // GET : records
         [HttpGet]
-        public IActionResult GetRecords()
+        public IActionResult GetRecords([FromQuery] TypeRecord? type)
         {
             var records = _recordManager.GetRecords();
+            if (type.HasValue)
+            {
+                records = records.Where(r => r.Type == type.Value);
+            }
+            
             return Ok(records.Select(record => _mapper.Map<RecordDto>(record)));
         }
 
@@ -41,21 +46,8 @@ namespace AlbumManager.Hosting.Controllers
             return Ok(_mapper.Map<RecordDto>(record));
         }
 
-        // GET : records/type/{type}
-        [HttpGet("type/{type}")]
-        public IActionResult GetRecordsByType(TypeRecord type)
-        {
-            var records = _recordManager.GetRecords(type);
-            if (records == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(records.Select(record => _mapper.Map<RecordDto>(record)));
-        }
-
-        // POST : records/add
-        [HttpPost("add")]
+        // POST : records
+        [HttpPost()]
         public IActionResult AddRecord([FromBody] RecordDto recordDto)
         {
             var record = _mapper.Map<Record>(recordDto);
@@ -63,9 +55,9 @@ namespace AlbumManager.Hosting.Controllers
             return CreatedAtAction(nameof(GetRecord), new { id = newRecord.Id }, _mapper.Map<RecordDto>(newRecord));
         }
 
-        // POST : records/delete
-        [HttpPost("delete")]
-        public IActionResult DeleteRecord([FromBody] int id)
+        // DELETE : records
+        [HttpDelete("{id}")]
+        public IActionResult DeleteRecord(int id)
         {
             var record = _recordManager.DeleteRecord(id);
             if (record == null)
