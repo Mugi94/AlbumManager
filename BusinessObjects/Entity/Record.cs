@@ -12,10 +12,6 @@ namespace BusinessObjects.Entity
         public ICollection<Artist> Artists { get; set; } = new List<Artist>();
         public ICollection<Track> Tracks { get; set; } = new List<Track>();
 
-        public Record()
-        {
-        }
-
         public Record(int id, string title, DateTime releaseDate, TypeRecord type, ICollection<Artist> artists, ICollection<Track> tracks)
         {
             Id = id;
