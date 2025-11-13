@@ -19,7 +19,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetRecords_ShouldReturnRecords_WhenExists()
+        public void GetRecords_WhenRecordsExist_ShouldReturnList()
         {
             var records = new List<BORecord> {
                 new(1, "Record1", new DateTime(2000, 12, 31), TypeRecord.Album, [], []),
@@ -30,12 +30,11 @@ namespace Services.Test
             var res = _recordManager.GetRecords();
 
             Assert.NotEmpty(res);
-            Assert.Contains(records[0], res);
-            Assert.Contains(records[1], res);
+            Assert.All(records, r => Assert.Contains(r, res));
         }
 
         [Fact]
-        public void GetRecords_ShouldReturnEmpty_WhenNoRecordsExist()
+        public void GetRecords_WhenNoRecordsExist_ShouldReturnEmptyList()
         {
             _mockRecordRepository.Setup(r => r.GetAll()).Returns([]);
             var res = _recordManager.GetRecords();
@@ -44,7 +43,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetRecords_ShouldReturnRecordsOfOneType_WhenTypeIsSpecified()
+        public void GetRecords_WhenTypeIsSpecified_ShouldReturnList()
         {
             var records = new List<BORecord> {
                 new(1, "Record1", new DateTime(2000, 12, 31), TypeRecord.Album, [], []),
@@ -60,16 +59,21 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetRecords_ShouldReturnEmptyOfOneType_WhenNoRecordsExist()
+        public void GetRecords_WhenNoRecordsOfOneType_ShouldReturnEmptyList()
         {
-            _mockRecordRepository.Setup(r => r.GetAll()).Returns([]);
+            var records = new List<BORecord> {
+                new(1, "Record1", new DateTime(2000, 12, 31), TypeRecord.Album, [], []),
+                new(2, "Record2", new DateTime(2025, 3, 20), TypeRecord.EP, [], [])
+            };
+
+            _mockRecordRepository.Setup(r => r.GetAll()).Returns(records);
             var res = _recordManager.GetRecords(TypeRecord.Single);
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void FindRecord_ShouldReturnRecord_WhenExists()
+        public void FindRecord_WhenRecordExists_ShouldReturnRecord()
         {
             var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
 
@@ -83,11 +87,57 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindRecord_ShouldReturnNull_WhenNotFound()
+        public void FindRecord_WhenRecordNotFound_ShouldReturnNull()
         {
             _mockRecordRepository.Setup(r => r.Get(It.IsAny<int>())).Returns(value: null);
             var res = _recordManager.FindRecord(1);
 
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public void AddRecord_WhenRecordGiven_ShouldAddRecord()
+        {
+            var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
+            _mockRecordRepository.Setup(r => r.Add(record)).Returns(record);
+
+            var res = _recordManager.AddRecord(record);
+            Assert.NotNull(res);
+            Assert.Equal(1, res.Id);
+            Assert.Equal("Record", res.Title);
+            Assert.Equal(TypeRecord.Single, res.Type);
+        }
+
+        [Fact]
+        public void AddRecord_WhenRecordAlreadyExists_ShouldReturnNull()
+        {
+            var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
+            _mockRecordRepository.Setup(r => r.GetAll()).Returns([record]);
+            _mockRecordRepository.Setup(r => r.Add(record)).Returns((BORecord r) => r);
+
+            var res = _recordManager.AddRecord(record);
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public void DeleteRecord_WhenRecordExists_ShouldRemoveRecord()
+        {
+            var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
+            _mockRecordRepository.Setup(r => r.Delete(1)).Returns(record);
+            
+            var res = _recordManager.DeleteRecord(1);
+            Assert.NotNull(res);
+            Assert.Equal(1, res.Id);
+            Assert.Equal("Record", res.Title);
+            Assert.Equal(TypeRecord.Single, res.Type);
+        }
+
+        [Fact]
+        public void DeleteRecord_WhenRecordNotFound_ShouldReturnNull()
+        {
+            _mockRecordRepository.Setup(r => r.Delete(It.IsAny<int>())).Returns(value: null);
+            
+            var res = _recordManager.DeleteRecord(1);
             Assert.Null(res);
         }
     }

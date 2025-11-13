@@ -17,7 +17,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetArtists_ShouldReturnArtists_WhenExists()
+        public void GetArtists_WhenArtistExists_ShouldReturnList()
         {
             var artists = new List<Artist> {
                 new(1, "Artist1", 2000, [], []),
@@ -28,12 +28,11 @@ namespace Services.Test
             var res = _artistManager.GetArtists();
 
             Assert.NotEmpty(res);
-            Assert.Contains(artists[0], res);
-            Assert.Contains(artists[1], res);
+            Assert.All(artists, a => Assert.Contains(a, res));
         }
 
         [Fact]
-        public void GetArtists_ShouldReturnEmpty_WhenNoArtistsExist()
+        public void GetArtists_WhenNoArtistsExist_ShouldReturnEmptyList()
         {
             _mockArtistRepository.Setup(a => a.GetAll()).Returns([]);
             var res = _artistManager.GetArtists();
@@ -42,38 +41,44 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetArtists_ShouldReturnArtistsOfOneYear_WhenDebutYearIsSpecified()
+        public void GetArtists_WhenDebutYearIsSpecified_ShouldReturnList()
         {
             var artists = new List<Artist> {
                 new(1, "Artist1", 2000, [], []),
-                new(2, "Artist2", 2025, [], [])
+                new(2, "Artist2", 2025, [], []),
+                new(3, "Artist3", 2025, [], [])
             };
 
             _mockArtistRepository.Setup(a => a.GetAll()).Returns(artists);
             var res = _artistManager.GetArtists(2025);
 
             Assert.NotEmpty(res);
-            Assert.Single(res);
-            Assert.Equal(2025, res.First().DebutYear);
+            Assert.Equal(2, res.Count());
+            Assert.All(res, a => Assert.Equal(2025, a.DebutYear));
         }
 
         [Fact]
-        public void GetArtists_ShouldReturnEmptyOfOneYear_WhenNoArtistsExists()
+        public void GetArtists_WhenNoArtistsOfOneYear_ShouldReturnEmptyList()
         {
-            _mockArtistRepository.Setup(a => a.GetAll()).Returns([]);
+            var artists = new List<Artist> {
+                new(1, "Artist1", 2000, [], []),
+                new(2, "Artist2", 2000, [], [])
+            };
+
+            _mockArtistRepository.Setup(a => a.GetAll()).Returns(artists);
             var res = _artistManager.GetArtists(2025);
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void FindArtist_ShouldReturnArtist_WhenExists()
+        public void FindArtist_WhenArtistExists_ShouldReturnArtist()
         {
             var artist = new Artist(1, "Artist", 2025, [], []);
 
             _mockArtistRepository.Setup(a => a.Get(1)).Returns(artist);
             var res = _artistManager.FindArtist(1);
-            
+
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Artist", res.Name);
@@ -81,10 +86,56 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindArtist_ShouldReturnNull_WhenNotFound()
+        public void FindArtist_WhenArtistNotFound_ShouldReturnNull()
         {
             _mockArtistRepository.Setup(a => a.Get(It.IsAny<int>())).Returns(value: null);
             var res = _artistManager.FindArtist(1);
+
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public void AddArtist_WhenArtistGiven_ShouldAddArtist()
+        {
+            var artist = new Artist(1, "Artist", 2025, [], []);
+            _mockArtistRepository.Setup(a => a.Add(artist)).Returns(artist);
+
+            var res = _artistManager.AddArtist(artist);
+            Assert.NotNull(res);
+            Assert.Equal(1, res.Id);
+            Assert.Equal("Artist", res.Name);
+            Assert.Equal(2025, res.DebutYear);
+        }
+
+        [Fact]
+        public void AddArtist_WhenArtistAlreadyExists_ShouldReturnNull()
+        {
+            var artist = new Artist(1, "Artist", 2025, [], []);
+            _mockArtistRepository.Setup(a => a.GetAll()).Returns([artist]);
+            _mockArtistRepository.Setup(a => a.Add(artist)).Returns((Artist a) => a);
+
+            var res = _artistManager.AddArtist(artist);
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public void DeleteArtist_WhenArtistExists_ShouldRemoveArtist()
+        {
+            var artist = new Artist(1, "Artist", 2025, [], []);
+            _mockArtistRepository.Setup(a => a.Delete(1)).Returns(artist);
+
+            var res = _artistManager.DeleteArtist(1);
+            Assert.NotNull(res);
+            Assert.Equal(1, res.Id);
+            Assert.Equal("Artist", res.Name);
+            Assert.Equal(2025, res.DebutYear);
+        }
+
+        [Fact]
+        public void DeleteArtist_WhenArtistNotFound_ShouldReturnNull()
+        {
+            _mockArtistRepository.Setup(a => a.Delete(It.IsAny<int>())).Returns(value: null);
+            var res = _artistManager.DeleteArtist(1);
 
             Assert.Null(res);
         }

@@ -17,7 +17,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetTracks_ShouldReturnTracks_WhenExists()
+        public void GetTracks_WhenTrackExists_ShouldReturnList()
         {
             var tracks = new List<Track> {
                 new(1, "Track1", 320, [], []),
@@ -28,12 +28,11 @@ namespace Services.Test
             var res = _trackManager.GetTracks();
 
             Assert.NotEmpty(res);
-            Assert.Contains(tracks[0], res);
-            Assert.Contains(tracks[1], res);
+            Assert.All(tracks, t => Assert.Contains(t, res));
         }
 
         [Fact]
-        public void GetTracks_ShouldReturnEmpty_WhenNoTracksExist()
+        public void GetTracks_WhenNoTracksExist_ShouldReturnEmptyList()
         {
             _mockTrackRepository.Setup(t => t.GetAll()).Returns([]);
             var res = _trackManager.GetTracks();
@@ -42,7 +41,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetTracks_ShouldReturnTracksOfOneArtist_WhenArtistIsSpecified()
+        public void GetTracks_WhenArtistIsSpecified_ShouldReturnList()
         {
             var artist1 = new Artist(1, "Artist1", 2000, [], []);
             var artist2 = new Artist(2, "Artist2", 2010, [], []);
@@ -62,7 +61,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetTracks_ShouldReturnEmptyOfOneArtist_WhenNoTracksExist()
+        public void GetTracks_WhenNoTracksOfOneArtist_ShouldReturnEmptyList()
         {
             _mockTrackRepository.Setup(t => t.GetAll()).Returns([]);
             var res = _trackManager.GetTracks(new Artist(1, "Artist", 2000, [], []));
@@ -71,7 +70,7 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindTrack_ShouldReturnTrack_WhenExist()
+        public void FindTrack_WhenTrackExists_ShouldReturnTrack()
         {
             var track = new Track(1, "Track", 90, [], []);
 
@@ -85,10 +84,56 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindTrack_ShouldReturnNull_WhenNotFound()
+        public void FindTrack_WhenTrackNotFound_ShouldReturnNull()
         {
             _mockTrackRepository.Setup(t => t.Get(It.IsAny<int>())).Returns(value: null);
             var res = _trackManager.FindTrack(1);
+
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public void AddTrack_WhenTrackGiven_ShouldAddTrack()
+        {
+            var track = new Track(1, "Track", 100, [], []);
+            _mockTrackRepository.Setup(t => t.Add(track)).Returns(track);
+
+            var res = _trackManager.AddTrack(track);
+            Assert.NotNull(res);
+            Assert.Equal(1, res.Id);
+            Assert.Equal("Track", res.Title);
+            Assert.Equal(100, res.Duration);
+        }
+
+        [Fact]
+        public void AddTrack_WhenTrackAlreadyExists_ShouldReturnNull()
+        {
+            var track = new Track(1, "Track", 100, [], []);
+            _mockTrackRepository.Setup(t => t.GetAll()).Returns([track]);
+            _mockTrackRepository.Setup(t => t.Add(track)).Returns((Track t) => t);
+
+            var res = _trackManager.AddTrack(track);
+            Assert.Null(res);
+        }
+
+        [Fact]
+        public void DeleteTrack_WhenTrackExists_ShouldRemoveTrack()
+        {
+            var track = new Track(1, "Track", 100, [], []);
+            _mockTrackRepository.Setup(t => t.Delete(1)).Returns(track);
+
+            var res = _trackManager.DeleteTrack(1);
+            Assert.NotNull(res);
+            Assert.Equal(1, res.Id);
+            Assert.Equal("Track", res.Title);
+            Assert.Equal(100, res.Duration);
+        }
+
+        [Fact]
+        public void DeleteTrack_WhenTrackNotFound_ShouldReturnNull()
+        {
+            _mockTrackRepository.Setup(t => t.Delete(It.IsAny<int>())).Returns(value: null);
+            var res = _trackManager.DeleteTrack(1);
 
             Assert.Null(res);
         }
