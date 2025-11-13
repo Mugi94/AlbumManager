@@ -1,6 +1,6 @@
 using AutoMapper;
 using BusinessObjects.Entity;
-using DataAccessLayer.DataTransferObject;
+using BusinessObjects.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 
@@ -51,10 +51,10 @@ namespace AlbumManager.Hosting.Controllers
         {
             var artist = _mapper.Map<Artist>(artistDto);
             var newArtist = _artistManager.AddArtist(artist);
-            return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id}, _mapper.Map<ArtistDto>(newArtist));
+            return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id }, _mapper.Map<ArtistDto>(newArtist));
         }
 
-        // DELETE : artists
+        // DELETE : artists/{id}
         [HttpDelete("{id}")]
         public IActionResult DeleteArtist(int id)
         {

@@ -1,7 +1,7 @@
 using AutoMapper;
 using BusinessObjects.Entity;
 using BusinessObjects.Enum;
-using DataAccessLayer.DataTransferObject;
+using BusinessObjects.DataTransferObject;
 using Microsoft.AspNetCore.Mvc;
 using Services.Services;
 

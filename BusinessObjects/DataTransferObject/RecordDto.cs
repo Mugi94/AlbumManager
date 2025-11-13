@@ -1,6 +1,6 @@
 using BusinessObjects.Enum;
 
-namespace DataAccessLayer.DataTransferObject
+namespace BusinessObjects.DataTransferObject
 {
     public class RecordDto
     {

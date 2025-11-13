@@ -1,4 +1,4 @@
-namespace DataAccessLayer.DataTransferObject
+namespace BusinessObjects.DataTransferObject
 {
     public class ArtistDto
     {

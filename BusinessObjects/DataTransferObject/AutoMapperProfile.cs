@@ -1,7 +1,7 @@
 using AutoMapper;
 using BusinessObjects.Entity;
 
-namespace DataAccessLayer.DataTransferObject
+namespace BusinessObjects.DataTransferObject
 {
     public class AutoMapperProfile: Profile
     {

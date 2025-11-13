@@ -1,6 +1,6 @@
 using BusinessObjects.Entity;
 using DataAccessLayer.Contexts;
-using DataAccessLayer.DataTransferObject;
+using BusinessObjects.DataTransferObject;
 using DataAccessLayer.Repository;
 using Microsoft.EntityFrameworkCore;
 using Services.Services;
