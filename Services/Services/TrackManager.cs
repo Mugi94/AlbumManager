@@ -29,6 +29,10 @@ namespace Services.Services
 
         public Track AddTrack(Track track)
         {
+            var existing = _trackRepository.GetAll().FirstOrDefault(t => t.Id == track.Id);
+            if (existing != null)
+                return null;
+                
             return _trackRepository.Add(track);
         }
 

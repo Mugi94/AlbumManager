@@ -29,6 +29,10 @@ namespace Services.Services
 
         public Artist AddArtist(Artist artist)
         {
+            var existing = _artistRepository.GetAll().FirstOrDefault(a => a.Id == artist.Id);
+            if (existing != null)
+                return null;
+
             return _artistRepository.Add(artist);
         }
 

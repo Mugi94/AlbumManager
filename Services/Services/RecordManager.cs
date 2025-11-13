@@ -30,6 +30,10 @@ namespace Services.Services
 
         public Record AddRecord(Record record)
         {
+            var existing = _recordRepository.GetAll().FirstOrDefault(r => r.Id == record.Id);
+            if (existing != null)
+                return null;
+
             return _recordRepository.Add(record);
         }
 
