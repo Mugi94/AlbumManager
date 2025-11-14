@@ -5,21 +5,11 @@ namespace BusinessObjects.DataTransferObject
     public class RecordDto
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public required string Title { get; set; }
         public DateTime ReleaseDate { get; set; }
         public TypeRecord Type { get; set; }
 
-        public ICollection<ArtistDto> Artists { get; set; }
-        public ICollection<TrackDto> Tracks { get; set; }
-
-        public RecordDto(int id, string title, DateTime releaseDate, TypeRecord type, ICollection<ArtistDto> artists, ICollection<TrackDto> tracks)
-        {
-            Id = id;
-            Title = title;
-            ReleaseDate = releaseDate;
-            Type = type;
-            Artists = artists;
-            Tracks = tracks;
-        }
+        public ICollection<ArtistDto> Artists { get; set; } = new List<ArtistDto>();
+        public ICollection<TrackDto> Tracks { get; set; } = new List<TrackDto>();
     }
 }
