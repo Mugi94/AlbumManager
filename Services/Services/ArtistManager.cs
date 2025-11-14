@@ -22,12 +22,12 @@ namespace Services.Services
             return _artistRepository.GetAll().Where(artist => artist.DebutYear == year);
         }
 
-        public Artist FindArtist(int id)
+        public Artist? FindArtist(int id)
         {
             return _artistRepository.Get(id);
         }
 
-        public Artist AddArtist(Artist artist)
+        public Artist? AddArtist(Artist artist)
         {
             var existing = _artistRepository.GetAll().FirstOrDefault(a => a.Id == artist.Id);
             if (existing != null)
@@ -36,7 +36,7 @@ namespace Services.Services
             return _artistRepository.Add(artist);
         }
 
-        public Artist DeleteArtist(int id)
+        public Artist? DeleteArtist(int id)
         {
             return _artistRepository.Delete(id);
         }

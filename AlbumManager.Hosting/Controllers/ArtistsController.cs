@@ -23,13 +23,10 @@ namespace AlbumManager.Hosting.Controllers
         [HttpGet]
         public IActionResult GetArtists([FromQuery] int? year)
         {
-            var artists = _artistManager.GetArtists();
             if (year.HasValue)
-            {
-                artists = artists.Where(a => a.DebutYear == year.Value);
-            }
-            
-            return Ok(artists.Select(artist => _mapper.Map<ArtistDto>(artist)));
+                return Ok(_artistManager.GetArtists(year.Value).Select(a => _mapper.Map<ArtistDto>(a)));
+            else
+                return Ok(_artistManager.GetArtists().Select(a => _mapper.Map<ArtistDto>(a)));
         }
 
         // GET : artists/{id}
@@ -51,6 +48,10 @@ namespace AlbumManager.Hosting.Controllers
         {
             var artist = _mapper.Map<Artist>(artistDto);
             var newArtist = _artistManager.AddArtist(artist);
+            
+            if (newArtist == null)
+                return BadRequest($"{artist.Name} already exists");
+
             return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id }, _mapper.Map<ArtistDto>(newArtist));
         }
 

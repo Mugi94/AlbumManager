@@ -22,12 +22,12 @@ namespace Services.Services
             return _trackRepository.GetAll().Where(track => track.Artists.Any(a => a.Id == artist.Id));
         }
 
-        public Track FindTrack(int id)
+        public Track? FindTrack(int id)
         {
             return _trackRepository.Get(id);
         }
 
-        public Track AddTrack(Track track)
+        public Track? AddTrack(Track track)
         {
             var existing = _trackRepository.GetAll().FirstOrDefault(t => t.Id == track.Id);
             if (existing != null)
@@ -36,7 +36,7 @@ namespace Services.Services
             return _trackRepository.Add(track);
         }
 
-        public Track DeleteTrack(int id)
+        public Track? DeleteTrack(int id)
         {
             return _trackRepository.Delete(id);
         }

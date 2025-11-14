@@ -7,8 +7,8 @@ namespace Services.Services
     {
         public IEnumerable<Record> GetRecords();
         public IEnumerable<Record> GetRecords(TypeRecord type);
-        public Record FindRecord(int id);
-        public Record AddRecord(Record record);
-        public Record DeleteRecord(int id);
+        public Record? FindRecord(int id);
+        public Record? AddRecord(Record record);
+        public Record? DeleteRecord(int id);
     }
 }

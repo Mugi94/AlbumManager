@@ -14,12 +14,16 @@ namespace DataAccessLayer.Repository
 
         public IEnumerable<Artist> GetAll()
         {
-            return _musicContext.Artists;
+            return _musicContext.Artists.ToList();
         }
 
-        public Artist Get(int id)
+        public Artist? Get(int id)
         {
-            return _musicContext.Artists.First(artist => artist.Id == id);
+            var artist = _musicContext.Artists.FirstOrDefault(artist => artist.Id == id);
+            if (artist == null)
+                return null;
+
+            return artist;
         }
 
         public Artist Add(Artist artist)
@@ -29,10 +33,13 @@ namespace DataAccessLayer.Repository
             return artist;
         }
 
-        public Artist Delete(int id)
+        public Artist? Delete(int id)
         {
-            var artist = _musicContext.Artists.First(artist => artist.Id == id);
-            _musicContext.Remove(artist);
+            var artist = _musicContext.Artists.FirstOrDefault(artist => artist.Id == id);
+            if (artist == null)
+                return null;
+            
+            _musicContext.Artists.Remove(artist);
             _musicContext.SaveChanges();
             return artist;
         }

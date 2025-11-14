@@ -46,6 +46,10 @@ namespace AlbumManager.Hosting.Controllers
         {
             var track = _mapper.Map<Track>(trackDto);
             var newTrack = _trackManager.AddTrack(track);
+            
+            if (newTrack == null)
+                return BadRequest($"{track.Title} already exists");
+
             return CreatedAtAction(nameof(GetTrack), new { id = newTrack.Id }, _mapper.Map<TrackDto>(newTrack));
         }
 

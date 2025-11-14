@@ -24,13 +24,10 @@ namespace AlbumManager.Hosting.Controllers
         [HttpGet]
         public IActionResult GetRecords([FromQuery] TypeRecord? type)
         {
-            var records = _recordManager.GetRecords();
             if (type.HasValue)
-            {
-                records = records.Where(r => r.Type == type.Value);
-            }
-            
-            return Ok(records.Select(record => _mapper.Map<RecordDto>(record)));
+                return Ok(_recordManager.GetRecords(type.Value).Select(r => _mapper.Map<RecordDto>(r)));
+            else
+                return Ok(_recordManager.GetRecords().Select(r => _mapper.Map<RecordDto>(r)));
         }
 
         // GET : records/{id}
@@ -52,6 +49,10 @@ namespace AlbumManager.Hosting.Controllers
         {
             var record = _mapper.Map<Record>(recordDto);
             var newRecord = _recordManager.AddRecord(record);
+            
+            if (newRecord == null)
+                return BadRequest($"{record.Title} already exists");
+
             return CreatedAtAction(nameof(GetRecord), new { id = newRecord.Id }, _mapper.Map<RecordDto>(newRecord));
         }
 

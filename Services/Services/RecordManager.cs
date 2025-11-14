@@ -23,12 +23,12 @@ namespace Services.Services
             return _recordRepository.GetAll().Where(record => record.Type == type);
         }
 
-        public Record FindRecord(int id)
+        public Record? FindRecord(int id)
         {
             return _recordRepository.Get(id);
         }
 
-        public Record AddRecord(Record record)
+        public Record? AddRecord(Record record)
         {
             var existing = _recordRepository.GetAll().FirstOrDefault(r => r.Id == record.Id);
             if (existing != null)
@@ -37,7 +37,7 @@ namespace Services.Services
             return _recordRepository.Add(record);
         }
 
-        public Record DeleteRecord(int id)
+        public Record? DeleteRecord(int id)
         {
             return _recordRepository.Delete(id);
         }

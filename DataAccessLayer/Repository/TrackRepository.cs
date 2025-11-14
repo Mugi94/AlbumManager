@@ -15,20 +15,25 @@ namespace DataAccessLayer.Repository
         public IEnumerable<Track> GetAll()
         {
             return _musicContext.Tracks
-                .Include(t => t.Artists);
+                .Include(t => t.Artists)
+                .ToList();
         }
 
-        public Track Get(int id)
+        public Track? Get(int id)
         {
-            return _musicContext.Tracks
+            var track = _musicContext.Tracks
                 .Include(t => t.Artists)
-                .First(track => track.Id == id);
+                .FirstOrDefault(track => track.Id == id);
+                    
+            if (track == null)
+                return null;
+
+            return track;
         }
 
         public Track Add(Track track)
         {
-            var artists = track.Artists
-            .Select(
+            var artists = track.Artists.Select(
                 artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
                 ?? throw new InvalidOperationException($"{artist.Name} not existing")
             ).ToList();
@@ -40,9 +45,12 @@ namespace DataAccessLayer.Repository
             return track;
         }
 
-        public Track Delete(int id)
+        public Track? Delete(int id)
         {
-            var track = _musicContext.Tracks.First(track => track.Id == id);
+            var track = _musicContext.Tracks.FirstOrDefault(track => track.Id == id);
+            if (track == null)
+                return null;
+
             _musicContext.Remove(track);
             _musicContext.SaveChanges();
             return track;
