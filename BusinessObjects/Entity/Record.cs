@@ -5,7 +5,7 @@ namespace BusinessObjects.Entity
     public class Record: IEntity
     {
         public int Id { get; set; }
-        public required string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
         public TypeRecord Type { get; set; }
 

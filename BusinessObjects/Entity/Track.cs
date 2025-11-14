@@ -3,7 +3,7 @@ namespace BusinessObjects.Entity
     public class Track: IEntity
     {
         public int Id { get; set; }
-        public required string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         public int Duration { get; set; }
 
         public ICollection<Artist> Artists { get; set; } = new List<Artist>();

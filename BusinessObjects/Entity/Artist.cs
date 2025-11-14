@@ -3,7 +3,7 @@ namespace BusinessObjects.Entity
     public class Artist: IEntity
     {
         public int Id { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
         public int DebutYear { get; set; }
 
         public ICollection<Record> Records { get; set; } = new List<Record>();

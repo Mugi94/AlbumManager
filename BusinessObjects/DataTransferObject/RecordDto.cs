@@ -5,7 +5,7 @@ namespace BusinessObjects.DataTransferObject
     public class RecordDto
     {
         public int Id { get; set; }
-        public required string Title { get; set; }
+        public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
         public TypeRecord Type { get; set; }
 
