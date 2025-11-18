@@ -37,6 +37,11 @@ namespace Services.Services
             return _recordRepository.Add(record);
         }
 
+        public Record? UpdateRecord(int id, Record record)
+        {
+            return _recordRepository.Update(id, record);
+        }
+
         public Record? DeleteRecord(int id)
         {
             return _recordRepository.Delete(id);

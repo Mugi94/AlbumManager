@@ -53,6 +53,17 @@ namespace AlbumManager.Hosting.Controllers
             return CreatedAtAction(nameof(GetTrack), new { id = newTrack.Id }, _mapper.Map<TrackDto>(newTrack));
         }
 
+        // PUT : tracks/{id}
+        [HttpPut("{id}")]
+        public IActionResult UpdateRecord(int id, TrackDto trackDto)
+        {
+            var track = _trackManager.UpdateTrack(id, _mapper.Map<Track>(trackDto));
+            if (track == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<TrackDto>(track));
+        }
+
         // DELETE : tracks
         [HttpDelete("{id}")]
         public IActionResult DeleteTrack(int id)

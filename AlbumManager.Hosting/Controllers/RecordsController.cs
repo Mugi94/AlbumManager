@@ -43,6 +43,17 @@ namespace AlbumManager.Hosting.Controllers
             return Ok(_mapper.Map<RecordDto>(record));
         }
 
+        // PUT : records/{id}
+        [HttpPut("{id}")]
+        public IActionResult UpdateRecord(int id, RecordDto recordDto)
+        {
+            var record = _recordManager.UpdateRecord(id, _mapper.Map<Record>(recordDto));
+            if (record == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<RecordDto>(record));
+        }
+
         // POST : records
         [HttpPost()]
         public IActionResult AddRecord([FromBody] RecordDto recordDto)

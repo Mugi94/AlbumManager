@@ -33,6 +33,19 @@ namespace DataAccessLayer.Repository
             return artist;
         }
 
+        public Artist? Update(int id, Artist artist)
+        {
+            var artistUpdate = _musicContext.Artists.Find(id);
+            if (artistUpdate == null)
+                return null;
+
+            artistUpdate.Name = artist.Name;
+            artistUpdate.DebutYear = artist.DebutYear;
+            
+            _musicContext.SaveChanges();
+            return artistUpdate;
+        }
+
         public Artist? Delete(int id)
         {
             var artist = _musicContext.Artists.FirstOrDefault(artist => artist.Id == id);

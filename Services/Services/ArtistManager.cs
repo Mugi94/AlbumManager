@@ -36,6 +36,11 @@ namespace Services.Services
             return _artistRepository.Add(artist);
         }
 
+        public Artist? UpdateArtist(int id, Artist artist)
+        {
+            return _artistRepository.Update(id, artist);
+        }
+
         public Artist? DeleteArtist(int id)
         {
             return _artistRepository.Delete(id);

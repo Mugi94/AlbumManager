@@ -7,6 +7,7 @@ namespace DataAccessLayer.Repository
         IEnumerable<T> GetAll();
         T? Get(int id);
         T Add(T entity);
+        T? Update(int id, T entity);
         T? Delete(int id);
     }
 }

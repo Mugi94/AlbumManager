@@ -9,6 +9,7 @@ namespace Services.Services
         public IEnumerable<Record> GetRecords(TypeRecord type);
         public Record? FindRecord(int id);
         public Record? AddRecord(Record record);
+        public Record? UpdateRecord(int id, Record record);
         public Record? DeleteRecord(int id);
     }
 }

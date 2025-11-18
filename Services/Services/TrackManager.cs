@@ -36,6 +36,11 @@ namespace Services.Services
             return _trackRepository.Add(track);
         }
 
+        public Track? UpdateTrack(int id, Track track)
+        {
+            return _trackRepository.Update(id, track);
+        }
+
         public Track? DeleteTrack(int id)
         {
             return _trackRepository.Delete(id);

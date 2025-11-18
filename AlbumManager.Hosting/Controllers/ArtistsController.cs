@@ -55,6 +55,17 @@ namespace AlbumManager.Hosting.Controllers
             return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id }, _mapper.Map<ArtistDto>(newArtist));
         }
 
+        // PUT : artists/{id}
+        [HttpPut("{id}")]
+        public IActionResult UpdateArtist(int id, ArtistDto artistDto)
+        {
+            var artist = _artistManager.UpdateArtist(id, _mapper.Map<Artist>(artistDto));
+            if (artist == null)
+                return NotFound();
+
+            return Ok(_mapper.Map<ArtistDto>(artist));
+        }
+
         // DELETE : artists/{id}
         [HttpDelete("{id}")]
         public IActionResult DeleteArtist(int id)
