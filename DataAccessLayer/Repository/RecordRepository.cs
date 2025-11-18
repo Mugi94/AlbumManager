@@ -13,6 +13,22 @@ namespace DataAccessLayer.Repository
             _musicContext = albumContext;
         }
 
+        private List<Artist> GetArtists(Record record)
+        {
+            return record.Artists.Select(
+                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
+                ?? throw new InvalidOperationException($"{artist.Name} not existing")
+            ).ToList();
+        }
+
+        private List<Track> GetTracks(Record record)
+        {
+            return record.Tracks.Select(
+                track => _musicContext.Tracks.FirstOrDefault(t => t.Id == track.Id)
+                ?? throw new InvalidOperationException($"{track.Title} not existing")
+            ).ToList();
+        }
+
         public IEnumerable<Record> GetAll()
         {
             return _musicContext.Records
@@ -36,15 +52,8 @@ namespace DataAccessLayer.Repository
 
         public Record Add(Record record)
         {
-            var artists = record.Artists.Select(
-                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
-                ?? throw new InvalidOperationException($"{artist.Name} not existing")
-            ).ToList();
-
-            var tracks = record.Tracks.Select(
-                track => _musicContext.Tracks.FirstOrDefault(t => t.Id == track.Id)
-                ?? throw new InvalidOperationException($"{track.Title} not existing")
-            ).ToList();
+            var artists = GetArtists(record);
+            var tracks = GetTracks(record);
 
             record.Artists = artists;
             record.Tracks = tracks;
@@ -66,19 +75,11 @@ namespace DataAccessLayer.Repository
             recordUpdate.Artists.Clear();
             recordUpdate.Tracks.Clear();
             
-            var artists = record.Artists.Select(
-                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
-                ?? throw new InvalidOperationException($"{artist.Name} not existing")
-            ).ToList();
-
+            var artists = GetArtists(record);
             foreach (var artist in artists)
                 recordUpdate.Artists.Add(artist);
 
-            var tracks = record.Tracks.Select(
-                track => _musicContext.Tracks.FirstOrDefault(t => t.Id == track.Id)
-                ?? throw new InvalidOperationException($"{track.Title} not existing")
-            ).ToList();
-            
+            var tracks = GetTracks(record);
             foreach (var track in tracks)
                 recordUpdate.Tracks.Add(track);
 

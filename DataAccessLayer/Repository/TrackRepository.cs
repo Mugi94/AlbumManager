@@ -12,6 +12,15 @@ namespace DataAccessLayer.Repository
         {
             _musicContext = albumContext;
         }
+
+        private List<Artist> GetArtists(Track track)
+        {
+            return track.Artists.Select(
+                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
+                ?? throw new InvalidOperationException($"{artist.Name} not existing")
+            ).ToList();
+        }
+
         public IEnumerable<Track> GetAll()
         {
             return _musicContext.Tracks
@@ -33,11 +42,7 @@ namespace DataAccessLayer.Repository
 
         public Track Add(Track track)
         {
-            var artists = track.Artists.Select(
-                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
-                ?? throw new InvalidOperationException($"{artist.Name} not existing")
-            ).ToList();
-
+            var artists = GetArtists(track);
             track.Artists = artists;
 
             _musicContext.Tracks.Add(track);
@@ -55,11 +60,7 @@ namespace DataAccessLayer.Repository
             trackUpdate.Duration = track.Duration;
             trackUpdate.Artists.Clear();
 
-            var artists = track.Artists.Select(
-                artist => _musicContext.Artists.FirstOrDefault(a => a.Id == artist.Id)
-                ?? throw new InvalidOperationException($"{artist.Name} not existing")
-            ).ToList();
-
+            var artists = GetArtists(track);
             foreach (var artist in artists)
                 trackUpdate.Artists.Add(artist);
 
