@@ -4,7 +4,7 @@ using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
-    public class RecordManager: IRecordManager
+    public class RecordManager : IRecordManager
     {
         private readonly IGenericRepository<Record> _recordRepository;
 
@@ -13,38 +13,39 @@ namespace Services.Services
             _recordRepository = recordRepository;
         }
 
-        public IEnumerable<Record> GetRecords()
+        public async Task<IEnumerable<Record>> GetRecordsAsync()
         {
-            return _recordRepository.GetAll();
+            return await _recordRepository.GetAllAsync();
         }
 
-        public IEnumerable<Record> GetRecords(TypeRecord type)
+        public async Task<IEnumerable<Record>> GetRecordsAsync(TypeRecord type)
         {
-            return _recordRepository.GetAll().Where(record => record.Type == type);
+            var records = await _recordRepository.GetAllAsync();
+            return records.Where(record => record.Type == type);
         }
 
-        public Record? FindRecord(int id)
+        public async Task<Record?> FindRecordAsync(int id)
         {
-            return _recordRepository.Get(id);
+            return await _recordRepository.GetAsync(id);
         }
 
-        public Record? AddRecord(Record record)
+        public async Task<Record?> AddRecordAsync(Record record)
         {
-            var existing = _recordRepository.GetAll().FirstOrDefault(r => r.Id == record.Id);
-            if (existing != null)
+            var existing = await _recordRepository.GetAllAsync();
+            if (existing.FirstOrDefault(r => r.Id == record.Id) != null)
                 return null;
 
-            return _recordRepository.Add(record);
+            return await _recordRepository.AddAsync(record);
         }
 
-        public Record? UpdateRecord(int id, Record record)
+        public async Task<Record?> UpdateRecordAsync(int id, Record record)
         {
-            return _recordRepository.Update(id, record);
+            return await _recordRepository.UpdateAsync(id, record);
         }
 
-        public Record? DeleteRecord(int id)
+        public async Task<Record?> DeleteRecordAsync(int id)
         {
-            return _recordRepository.Delete(id);
+            return await _recordRepository.DeleteAsync(id);
         }
     }
 }

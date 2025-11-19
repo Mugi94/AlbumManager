@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repository
 {
-    public class TrackRepository: IGenericRepository<Track>
+    public class TrackRepository : IGenericRepository<Track>
     {
         private readonly MusicContext _musicContext;
 
@@ -21,41 +21,34 @@ namespace DataAccessLayer.Repository
             ).ToList();
         }
 
-        public IEnumerable<Track> GetAll()
-        {
-            return _musicContext.Tracks
+        public async Task<IEnumerable<Track>> GetAllAsync()
+            => await _musicContext.Tracks
                 .Include(t => t.Artists)
-                .ToList();
+                .ToListAsync();
+
+        public async Task<Track?> GetAsync(int id)
+        {
+            return await _musicContext.Tracks
+                .Include(t => t.Artists)
+                .FirstOrDefaultAsync(track => track.Id == id);
         }
 
-        public Track? Get(int id)
-        {
-            var track = _musicContext.Tracks
-                .Include(t => t.Artists)
-                .FirstOrDefault(track => track.Id == id);
-                    
-            if (track == null)
-                return null;
-
-            return track;
-        }
-
-        public Track Add(Track track)
+        public async Task<Track> AddAsync(Track track)
         {
             var artists = GetArtists(track);
             track.Artists = artists;
 
             _musicContext.Tracks.Add(track);
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return track;
         }
 
-        public Track? Update(int id, Track track)
+        public async Task<Track?> UpdateAsync(int id, Track track)
         {
-            var trackUpdate = _musicContext.Tracks.Include(t => t.Artists).FirstOrDefault(t => t.Id == id);
+            var trackUpdate = await _musicContext.Tracks.Include(t => t.Artists).FirstOrDefaultAsync(t => t.Id == id);
             if (trackUpdate == null)
                 return null;
-            
+
             trackUpdate.Title = track.Title;
             trackUpdate.Duration = track.Duration;
             trackUpdate.Artists.Clear();
@@ -64,18 +57,18 @@ namespace DataAccessLayer.Repository
             foreach (var artist in artists)
                 trackUpdate.Artists.Add(artist);
 
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return trackUpdate;
         }
 
-        public Track? Delete(int id)
+        public async Task<Track?> DeleteAsync(int id)
         {
-            var track = _musicContext.Tracks.FirstOrDefault(track => track.Id == id);
+            var track = await _musicContext.Tracks.FindAsync(id);
             if (track == null)
                 return null;
 
             _musicContext.Remove(track);
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return track;
         }
     }

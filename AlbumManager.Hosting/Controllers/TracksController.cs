@@ -21,17 +21,17 @@ namespace AlbumManager.Hosting.Controllers
 
         // GET : tracks
         [HttpGet]
-        public IActionResult GetTracks()
+        public async Task<IActionResult> GetTracks()
         {
-            var tracks = _trackManager.GetTracks();
+            var tracks = await _trackManager.GetTracksAsync();
             return Ok(tracks.Select(track => _mapper.Map<TrackDto>(track)));
         }
 
         // GET : tracks/{id}
         [HttpGet("{id}")]
-        public IActionResult GetTrack(int id)
+        public async Task<IActionResult> GetTrack(int id)
         {
-            var track = _trackManager.FindTrack(id);
+            var track = await _trackManager.FindTrackAsync(id);
             if (track == null)
             {
                 return NotFound();
@@ -42,11 +42,11 @@ namespace AlbumManager.Hosting.Controllers
 
         // POST : tracks
         [HttpPost()]
-        public IActionResult AddTrack([FromBody] TrackDto trackDto)
+        public async Task<IActionResult> AddTrack([FromBody] TrackDto trackDto)
         {
             var track = _mapper.Map<Track>(trackDto);
-            var newTrack = _trackManager.AddTrack(track);
-            
+            var newTrack = await _trackManager.AddTrackAsync(track);
+
             if (newTrack == null)
                 return BadRequest($"{track.Title} already exists");
 
@@ -55,9 +55,9 @@ namespace AlbumManager.Hosting.Controllers
 
         // PUT : tracks/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateRecord(int id, TrackDto trackDto)
+        public async Task<IActionResult> UpdateRecord(int id, TrackDto trackDto)
         {
-            var track = _trackManager.UpdateTrack(id, _mapper.Map<Track>(trackDto));
+            var track = await _trackManager.UpdateTrackAsync(id, _mapper.Map<Track>(trackDto));
             if (track == null)
                 return NotFound();
 
@@ -66,9 +66,9 @@ namespace AlbumManager.Hosting.Controllers
 
         // DELETE : tracks
         [HttpDelete("{id}")]
-        public IActionResult DeleteTrack(int id)
+        public async Task<IActionResult> DeleteTrack(int id)
         {
-            var track = _trackManager.DeleteTrack(id);
+            var track = await _trackManager.DeleteTrackAsync(id);
             if (track == null)
             {
                 return NotFound();

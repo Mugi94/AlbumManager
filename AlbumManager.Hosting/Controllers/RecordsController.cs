@@ -22,19 +22,23 @@ namespace AlbumManager.Hosting.Controllers
 
         // GET : records
         [HttpGet]
-        public IActionResult GetRecords([FromQuery] TypeRecord? type)
+        public async Task<IActionResult> GetRecords([FromQuery] TypeRecord? type)
         {
+            IEnumerable<Record> records;
+
             if (type.HasValue)
-                return Ok(_recordManager.GetRecords(type.Value).Select(r => _mapper.Map<RecordDto>(r)));
+                records = await _recordManager.GetRecordsAsync(type.Value);
             else
-                return Ok(_recordManager.GetRecords().Select(r => _mapper.Map<RecordDto>(r)));
+                records = await _recordManager.GetRecordsAsync();
+
+            return Ok(records.Select(r => _mapper.Map<RecordDto>(r)));
         }
 
         // GET : records/{id}
         [HttpGet("{id}")]
-        public IActionResult GetRecord(int id)
+        public async Task<IActionResult> GetRecord(int id)
         {
-            var record = _recordManager.FindRecord(id);
+            var record = await _recordManager.FindRecordAsync(id);
             if (record == null)
             {
                 return NotFound();
@@ -45,9 +49,9 @@ namespace AlbumManager.Hosting.Controllers
 
         // PUT : records/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateRecord(int id, RecordDto recordDto)
+        public async Task<IActionResult> UpdateRecord(int id, RecordDto recordDto)
         {
-            var record = _recordManager.UpdateRecord(id, _mapper.Map<Record>(recordDto));
+            var record = await _recordManager.UpdateRecordAsync(id, _mapper.Map<Record>(recordDto));
             if (record == null)
                 return NotFound();
 
@@ -56,11 +60,11 @@ namespace AlbumManager.Hosting.Controllers
 
         // POST : records
         [HttpPost()]
-        public IActionResult AddRecord([FromBody] RecordDto recordDto)
+        public async Task<IActionResult> AddRecord([FromBody] RecordDto recordDto)
         {
             var record = _mapper.Map<Record>(recordDto);
-            var newRecord = _recordManager.AddRecord(record);
-            
+            var newRecord = await _recordManager.AddRecordAsync(record);
+
             if (newRecord == null)
                 return BadRequest($"{record.Title} already exists");
 
@@ -69,9 +73,9 @@ namespace AlbumManager.Hosting.Controllers
 
         // DELETE : records
         [HttpDelete("{id}")]
-        public IActionResult DeleteRecord(int id)
+        public async Task<IActionResult> DeleteRecord(int id)
         {
-            var record = _recordManager.DeleteRecord(id);
+            var record = await _recordManager.DeleteRecordAsync(id);
             if (record == null)
             {
                 return NotFound();

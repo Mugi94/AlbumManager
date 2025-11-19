@@ -17,31 +17,31 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetTracks_WhenTrackExists_ShouldReturnList()
+        public async Task GetTracks_WhenTrackExists_ShouldReturnList()
         {
             var tracks = new List<Track> {
                 new(1, "Track1", 320, [], []),
                 new(2, "Track2", 90, [], [])
             };
 
-            _mockTrackRepository.Setup(t => t.GetAll()).Returns(tracks);
-            var res = _trackManager.GetTracks();
+            _mockTrackRepository.Setup(t => t.GetAllAsync()).ReturnsAsync(tracks);
+            var res = await _trackManager.GetTracksAsync();
 
             Assert.NotEmpty(res);
             Assert.All(tracks, t => Assert.Contains(t, res));
         }
 
         [Fact]
-        public void GetTracks_WhenNoTracksExist_ShouldReturnEmptyList()
+        public async Task GetTracks_WhenNoTracksExist_ShouldReturnEmptyList()
         {
-            _mockTrackRepository.Setup(t => t.GetAll()).Returns([]);
-            var res = _trackManager.GetTracks();
+            _mockTrackRepository.Setup(t => t.GetAllAsync()).ReturnsAsync([]);
+            var res = await _trackManager.GetTracksAsync();
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void GetTracks_WhenArtistIsSpecified_ShouldReturnList()
+        public async Task GetTracks_WhenArtistIsSpecified_ShouldReturnList()
         {
             var artist1 = new Artist(1, "Artist1", 2000, [], []);
             var artist2 = new Artist(2, "Artist2", 2010, [], []);
@@ -52,8 +52,8 @@ namespace Services.Test
                 new(3, "Track3", 120, [artist1, artist2], [])
             };
 
-            _mockTrackRepository.Setup(t => t.GetAll()).Returns(tracks);
-            var res = _trackManager.GetTracks(artist1);
+            _mockTrackRepository.Setup(t => t.GetAllAsync()).ReturnsAsync(tracks);
+            var res = await _trackManager.GetTracksAsync(artist1);
 
             Assert.NotEmpty(res);
             Assert.Equal(2, res.Count());
@@ -61,21 +61,21 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetTracks_WhenNoTracksOfOneArtist_ShouldReturnEmptyList()
+        public async Task GetTracks_WhenNoTracksOfOneArtist_ShouldReturnEmptyList()
         {
-            _mockTrackRepository.Setup(t => t.GetAll()).Returns([]);
-            var res = _trackManager.GetTracks(new Artist(1, "Artist", 2000, [], []));
+            _mockTrackRepository.Setup(t => t.GetAllAsync()).ReturnsAsync([]);
+            var res = await _trackManager.GetTracksAsync(new Artist(1, "Artist", 2000, [], []));
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void FindTrack_WhenTrackExists_ShouldReturnTrack()
+        public async Task FindTrack_WhenTrackExists_ShouldReturnTrack()
         {
             var track = new Track(1, "Track", 90, [], []);
 
-            _mockTrackRepository.Setup(t => t.Get(1)).Returns(track);
-            var res = _trackManager.FindTrack(1);
+            _mockTrackRepository.Setup(t => t.GetAsync(1)).ReturnsAsync(track);
+            var res = await _trackManager.FindTrackAsync(1);
 
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
@@ -84,21 +84,21 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindTrack_WhenTrackNotFound_ShouldReturnNull()
+        public async Task FindTrack_WhenTrackNotFound_ShouldReturnNull()
         {
-            _mockTrackRepository.Setup(t => t.Get(It.IsAny<int>())).Returns(value: null);
-            var res = _trackManager.FindTrack(1);
+            _mockTrackRepository.Setup(t => t.GetAsync(It.IsAny<int>())).ReturnsAsync(value: null);
+            var res = await _trackManager.FindTrackAsync(1);
 
             Assert.Null(res);
         }
 
         [Fact]
-        public void AddTrack_WhenTrackGiven_ShouldAddTrack()
+        public async Task AddTrack_WhenTrackGiven_ShouldAddTrack()
         {
             var track = new Track(1, "Track", 100, [], []);
-            _mockTrackRepository.Setup(t => t.Add(track)).Returns(track);
+            _mockTrackRepository.Setup(t => t.AddAsync(track)).ReturnsAsync(track);
 
-            var res = _trackManager.AddTrack(track);
+            var res = await _trackManager.AddTrackAsync(track);
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Track", res.Title);
@@ -106,23 +106,23 @@ namespace Services.Test
         }
 
         [Fact]
-        public void AddTrack_WhenTrackAlreadyExists_ShouldReturnNull()
+        public async Task AddTrack_WhenTrackAlreadyExists_ShouldReturnNull()
         {
             var track = new Track(1, "Track", 100, [], []);
-            _mockTrackRepository.Setup(t => t.GetAll()).Returns([track]);
-            _mockTrackRepository.Setup(t => t.Add(track)).Returns((Track t) => t);
+            _mockTrackRepository.Setup(t => t.GetAllAsync()).ReturnsAsync([track]);
+            _mockTrackRepository.Setup(t => t.AddAsync(track)).ReturnsAsync((Track t) => t);
 
-            var res = _trackManager.AddTrack(track);
+            var res = await _trackManager.AddTrackAsync(track);
             Assert.Null(res);
         }
 
         [Fact]
-        public void DeleteTrack_WhenTrackExists_ShouldRemoveTrack()
+        public async Task DeleteTrack_WhenTrackExists_ShouldRemoveTrack()
         {
             var track = new Track(1, "Track", 100, [], []);
-            _mockTrackRepository.Setup(t => t.Delete(1)).Returns(track);
+            _mockTrackRepository.Setup(t => t.DeleteAsync(1)).ReturnsAsync(track);
 
-            var res = _trackManager.DeleteTrack(1);
+            var res = await _trackManager.DeleteTrackAsync(1);
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Track", res.Title);
@@ -130,10 +130,10 @@ namespace Services.Test
         }
 
         [Fact]
-        public void DeleteTrack_WhenTrackNotFound_ShouldReturnNull()
+        public async Task DeleteTrack_WhenTrackNotFound_ShouldReturnNull()
         {
-            _mockTrackRepository.Setup(t => t.Delete(It.IsAny<int>())).Returns(value: null);
-            var res = _trackManager.DeleteTrack(1);
+            _mockTrackRepository.Setup(t => t.DeleteAsync(It.IsAny<int>())).ReturnsAsync(value: null);
+            var res = await _trackManager.DeleteTrackAsync(1);
 
             Assert.Null(res);
         }

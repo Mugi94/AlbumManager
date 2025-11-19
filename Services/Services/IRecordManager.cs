@@ -5,11 +5,11 @@ namespace Services.Services
 {
     public interface IRecordManager
     {
-        public IEnumerable<Record> GetRecords();
-        public IEnumerable<Record> GetRecords(TypeRecord type);
-        public Record? FindRecord(int id);
-        public Record? AddRecord(Record record);
-        public Record? UpdateRecord(int id, Record record);
-        public Record? DeleteRecord(int id);
+        Task<IEnumerable<Record>> GetRecordsAsync();
+        Task<IEnumerable<Record>> GetRecordsAsync(TypeRecord type);
+        Task<Record?> FindRecordAsync(int id);
+        Task<Record?> AddRecordAsync(Record record);
+        Task<Record?> UpdateRecordAsync(int id, Record record);
+        Task<Record?> DeleteRecordAsync(int id);
     }
 }

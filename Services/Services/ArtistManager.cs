@@ -3,7 +3,7 @@ using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
-    public class ArtistManager: IArtistManager
+    public class ArtistManager : IArtistManager
     {
         private readonly IGenericRepository<Artist> _artistRepository;
 
@@ -12,38 +12,39 @@ namespace Services.Services
             _artistRepository = artistRepository;
         }
 
-        public IEnumerable<Artist> GetArtists()
+        public async Task<IEnumerable<Artist>> GetArtistsAsync()
         {
-            return _artistRepository.GetAll();
+            return await _artistRepository.GetAllAsync();
         }
 
-        public IEnumerable<Artist> GetArtists(int year)
+        public async Task<IEnumerable<Artist>> GetArtistsAsync(int year)
         {
-            return _artistRepository.GetAll().Where(artist => artist.DebutYear == year);
+            var artists = await _artistRepository.GetAllAsync();
+            return artists.Where(artist => artist.DebutYear == year);
         }
 
-        public Artist? FindArtist(int id)
+        public async Task<Artist?> FindArtistAsync(int id)
         {
-            return _artistRepository.Get(id);
+            return await _artistRepository.GetAsync(id);
         }
 
-        public Artist? AddArtist(Artist artist)
+        public async Task<Artist?> AddArtistAsync(Artist artist)
         {
-            var existing = _artistRepository.GetAll().FirstOrDefault(a => a.Id == artist.Id);
-            if (existing != null)
+            var existing = await _artistRepository.GetAllAsync();
+            if (existing.FirstOrDefault(a => a.Id == artist.Id) != null)
                 return null;
 
-            return _artistRepository.Add(artist);
+            return await _artistRepository.AddAsync(artist);
         }
 
-        public Artist? UpdateArtist(int id, Artist artist)
+        public async Task<Artist?> UpdateArtistAsync(int id, Artist artist)
         {
-            return _artistRepository.Update(id, artist);
+            return await _artistRepository.UpdateAsync(id, artist);
         }
 
-        public Artist? DeleteArtist(int id)
+        public async Task<Artist?> DeleteArtistAsync(int id)
         {
-            return _artistRepository.Delete(id);
+            return await _artistRepository.DeleteAsync(id);
         }
     }
 }

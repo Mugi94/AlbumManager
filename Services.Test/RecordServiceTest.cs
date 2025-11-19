@@ -19,39 +19,39 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetRecords_WhenRecordsExist_ShouldReturnList()
+        public async Task GetRecords_WhenRecordsExist_ShouldReturnList()
         {
             var records = new List<BORecord> {
                 new(1, "Record1", new DateTime(2000, 12, 31), TypeRecord.Album, [], []),
                 new(2, "Record2", new DateTime(2025, 3, 20), TypeRecord.EP, [], [])
             };
 
-            _mockRecordRepository.Setup(r => r.GetAll()).Returns(records);
-            var res = _recordManager.GetRecords();
+            _mockRecordRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(records);
+            var res = await _recordManager.GetRecordsAsync();
 
             Assert.NotEmpty(res);
             Assert.All(records, r => Assert.Contains(r, res));
         }
 
         [Fact]
-        public void GetRecords_WhenNoRecordsExist_ShouldReturnEmptyList()
+        public async Task GetRecords_WhenNoRecordsExist_ShouldReturnEmptyList()
         {
-            _mockRecordRepository.Setup(r => r.GetAll()).Returns([]);
-            var res = _recordManager.GetRecords();
+            _mockRecordRepository.Setup(r => r.GetAllAsync()).ReturnsAsync([]);
+            var res = await _recordManager.GetRecordsAsync();
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void GetRecords_WhenTypeIsSpecified_ShouldReturnList()
+        public async Task GetRecords_WhenTypeIsSpecified_ShouldReturnList()
         {
             var records = new List<BORecord> {
                 new(1, "Record1", new DateTime(2000, 12, 31), TypeRecord.Album, [], []),
                 new(2, "Record2", new DateTime(2025, 3, 20), TypeRecord.EP, [], [])
             };
 
-            _mockRecordRepository.Setup(r => r.GetAll()).Returns(records);
-            var res = _recordManager.GetRecords(TypeRecord.EP);
+            _mockRecordRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(records);
+            var res = await _recordManager.GetRecordsAsync(TypeRecord.EP);
 
             Assert.NotEmpty(res);
             Assert.Single(res);
@@ -59,26 +59,26 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetRecords_WhenNoRecordsOfOneType_ShouldReturnEmptyList()
+        public async Task GetRecords_WhenNoRecordsOfOneType_ShouldReturnEmptyList()
         {
             var records = new List<BORecord> {
                 new(1, "Record1", new DateTime(2000, 12, 31), TypeRecord.Album, [], []),
                 new(2, "Record2", new DateTime(2025, 3, 20), TypeRecord.EP, [], [])
             };
 
-            _mockRecordRepository.Setup(r => r.GetAll()).Returns(records);
-            var res = _recordManager.GetRecords(TypeRecord.Single);
+            _mockRecordRepository.Setup(r => r.GetAllAsync()).ReturnsAsync(records);
+            var res = await _recordManager.GetRecordsAsync(TypeRecord.Single);
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void FindRecord_WhenRecordExists_ShouldReturnRecord()
+        public async Task FindRecord_WhenRecordExists_ShouldReturnRecord()
         {
             var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
 
-            _mockRecordRepository.Setup(r => r.Get(1)).Returns(record);
-            var res = _recordManager.FindRecord(1);
+            _mockRecordRepository.Setup(r => r.GetAsync(1)).ReturnsAsync(record);
+            var res = await _recordManager.FindRecordAsync(1);
 
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
@@ -87,21 +87,21 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindRecord_WhenRecordNotFound_ShouldReturnNull()
+        public async Task FindRecord_WhenRecordNotFound_ShouldReturnNull()
         {
-            _mockRecordRepository.Setup(r => r.Get(It.IsAny<int>())).Returns(value: null);
-            var res = _recordManager.FindRecord(1);
+            _mockRecordRepository.Setup(r => r.GetAsync(It.IsAny<int>())).ReturnsAsync(value: null);
+            var res = await _recordManager.FindRecordAsync(1);
 
             Assert.Null(res);
         }
 
         [Fact]
-        public void AddRecord_WhenRecordGiven_ShouldAddRecord()
+        public async Task AddRecord_WhenRecordGiven_ShouldAddRecord()
         {
             var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
-            _mockRecordRepository.Setup(r => r.Add(record)).Returns(record);
+            _mockRecordRepository.Setup(r => r.AddAsync(record)).ReturnsAsync(record);
 
-            var res = _recordManager.AddRecord(record);
+            var res = await _recordManager.AddRecordAsync(record);
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Record", res.Title);
@@ -109,23 +109,23 @@ namespace Services.Test
         }
 
         [Fact]
-        public void AddRecord_WhenRecordAlreadyExists_ShouldReturnNull()
+        public async Task AddRecord_WhenRecordAlreadyExists_ShouldReturnNull()
         {
             var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
-            _mockRecordRepository.Setup(r => r.GetAll()).Returns([record]);
-            _mockRecordRepository.Setup(r => r.Add(record)).Returns((BORecord r) => r);
+            _mockRecordRepository.Setup(r => r.GetAllAsync()).ReturnsAsync([record]);
+            _mockRecordRepository.Setup(r => r.AddAsync(record)).ReturnsAsync((BORecord r) => r);
 
-            var res = _recordManager.AddRecord(record);
+            var res = await _recordManager.AddRecordAsync(record);
             Assert.Null(res);
         }
 
         [Fact]
-        public void DeleteRecord_WhenRecordExists_ShouldRemoveRecord()
+        public async Task DeleteRecord_WhenRecordExists_ShouldRemoveRecord()
         {
             var record = new BORecord(1, "Record", new DateTime(2025, 3, 20), TypeRecord.Single, [], []);
-            _mockRecordRepository.Setup(r => r.Delete(1)).Returns(record);
-            
-            var res = _recordManager.DeleteRecord(1);
+            _mockRecordRepository.Setup(r => r.DeleteAsync(1)).ReturnsAsync(record);
+
+            var res = await _recordManager.DeleteRecordAsync(1);
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Record", res.Title);
@@ -133,11 +133,11 @@ namespace Services.Test
         }
 
         [Fact]
-        public void DeleteRecord_WhenRecordNotFound_ShouldReturnNull()
+        public async Task DeleteRecord_WhenRecordNotFound_ShouldReturnNull()
         {
-            _mockRecordRepository.Setup(r => r.Delete(It.IsAny<int>())).Returns(value: null);
-            
-            var res = _recordManager.DeleteRecord(1);
+            _mockRecordRepository.Setup(r => r.DeleteAsync(It.IsAny<int>())).ReturnsAsync(value: null);
+
+            var res = await _recordManager.DeleteRecordAsync(1);
             Assert.Null(res);
         }
     }

@@ -3,7 +3,7 @@ using DataAccessLayer.Repository;
 
 namespace Services.Services
 {
-    public class TrackManager: ITrackManager
+    public class TrackManager : ITrackManager
     {
         private readonly IGenericRepository<Track> _trackRepository;
 
@@ -12,38 +12,39 @@ namespace Services.Services
             _trackRepository = trackRepository;
         }
 
-        public IEnumerable<Track> GetTracks()
+        public async Task<IEnumerable<Track>> GetTracksAsync()
         {
-            return _trackRepository.GetAll();
+            return await _trackRepository.GetAllAsync();
         }
 
-        public IEnumerable<Track> GetTracks(Artist artist)
+        public async Task<IEnumerable<Track>> GetTracksAsync(Artist artist)
         {
-            return _trackRepository.GetAll().Where(track => track.Artists.Any(a => a.Id == artist.Id));
+            var tracks = await _trackRepository.GetAllAsync();
+            return tracks.Where(track => track.Artists.Any(a => a.Id == artist.Id));
         }
 
-        public Track? FindTrack(int id)
+        public async Task<Track?> FindTrackAsync(int id)
         {
-            return _trackRepository.Get(id);
+            return await _trackRepository.GetAsync(id);
         }
 
-        public Track? AddTrack(Track track)
+        public async Task<Track?> AddTrackAsync(Track track)
         {
-            var existing = _trackRepository.GetAll().FirstOrDefault(t => t.Id == track.Id);
-            if (existing != null)
+            var existing = await _trackRepository.GetAllAsync();
+            if (existing.FirstOrDefault(t => t.Id == track.Id) != null)
                 return null;
-                
-            return _trackRepository.Add(track);
+
+            return await _trackRepository.AddAsync(track);
         }
 
-        public Track? UpdateTrack(int id, Track track)
+        public async Task<Track?> UpdateTrackAsync(int id, Track track)
         {
-            return _trackRepository.Update(id, track);
+            return await _trackRepository.UpdateAsync(id, track);
         }
 
-        public Track? DeleteTrack(int id)
+        public async Task<Track?> DeleteTrackAsync(int id)
         {
-            return _trackRepository.Delete(id);
+            return await _trackRepository.DeleteAsync(id);
         }
     }
 }

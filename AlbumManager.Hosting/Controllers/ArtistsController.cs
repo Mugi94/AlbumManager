@@ -21,19 +21,23 @@ namespace AlbumManager.Hosting.Controllers
 
         // GET : artists
         [HttpGet]
-        public IActionResult GetArtists([FromQuery] int? year)
+        public async Task<IActionResult> GetArtists([FromQuery] int? year)
         {
+            IEnumerable<Artist> artists;
+
             if (year.HasValue)
-                return Ok(_artistManager.GetArtists(year.Value).Select(a => _mapper.Map<ArtistDto>(a)));
+                artists = await _artistManager.GetArtistsAsync(year.Value);
             else
-                return Ok(_artistManager.GetArtists().Select(a => _mapper.Map<ArtistDto>(a)));
+                artists = await _artistManager.GetArtistsAsync();
+
+            return Ok(artists.Select(a => _mapper.Map<ArtistDto>(a)));
         }
 
         // GET : artists/{id}
         [HttpGet("{id}")]
-        public IActionResult GetArtist(int id)
+        public async Task<IActionResult> GetArtist(int id)
         {
-            var artist = _artistManager.FindArtist(id);
+            var artist = await _artistManager.FindArtistAsync(id);
             if (artist == null)
             {
                 return NotFound();
@@ -44,11 +48,11 @@ namespace AlbumManager.Hosting.Controllers
 
         // POST : artists
         [HttpPost()]
-        public IActionResult AddArtist([FromBody] ArtistDto artistDto)
+        public async Task<IActionResult> AddArtist([FromBody] ArtistDto artistDto)
         {
             var artist = _mapper.Map<Artist>(artistDto);
-            var newArtist = _artistManager.AddArtist(artist);
-            
+            var newArtist = await _artistManager.AddArtistAsync(artist);
+
             if (newArtist == null)
                 return BadRequest($"{artist.Name} already exists");
 
@@ -57,9 +61,9 @@ namespace AlbumManager.Hosting.Controllers
 
         // PUT : artists/{id}
         [HttpPut("{id}")]
-        public IActionResult UpdateArtist(int id, ArtistDto artistDto)
+        public async Task<IActionResult> UpdateArtist(int id, ArtistDto artistDto)
         {
-            var artist = _artistManager.UpdateArtist(id, _mapper.Map<Artist>(artistDto));
+            var artist = await _artistManager.UpdateArtistAsync(id, _mapper.Map<Artist>(artistDto));
             if (artist == null)
                 return NotFound();
 
@@ -68,9 +72,9 @@ namespace AlbumManager.Hosting.Controllers
 
         // DELETE : artists/{id}
         [HttpDelete("{id}")]
-        public IActionResult DeleteArtist(int id)
+        public async Task<IActionResult> DeleteArtist(int id)
         {
-            var artist = _artistManager.DeleteArtist(id);
+            var artist = await _artistManager.DeleteArtistAsync(id);
             if (artist == null)
             {
                 return NotFound();

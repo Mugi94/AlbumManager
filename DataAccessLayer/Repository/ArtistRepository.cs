@@ -1,9 +1,10 @@
 ﻿using BusinessObjects.Entity;
 using DataAccessLayer.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repository
 {
-    public class ArtistRepository: IGenericRepository<Artist>
+    public class ArtistRepository : IGenericRepository<Artist>
     {
         private readonly MusicContext _musicContext;
 
@@ -12,48 +13,44 @@ namespace DataAccessLayer.Repository
             _musicContext = albumContext;
         }
 
-        public IEnumerable<Artist> GetAll()
+        public async Task<IEnumerable<Artist>> GetAllAsync()
         {
-            return _musicContext.Artists.ToList();
+            return await _musicContext.Artists.ToListAsync();
         }
 
-        public Artist? Get(int id)
+        public async Task<Artist?> GetAsync(int id)
         {
-            var artist = _musicContext.Artists.FirstOrDefault(artist => artist.Id == id);
-            if (artist == null)
-                return null;
-
-            return artist;
+            return await _musicContext.Artists.FirstOrDefaultAsync(a => a.Id == id);
         }
 
-        public Artist Add(Artist artist)
+        public async Task<Artist> AddAsync(Artist artist)
         {
             _musicContext.Artists.Add(artist);
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return artist;
         }
 
-        public Artist? Update(int id, Artist artist)
+        public async Task<Artist?> UpdateAsync(int id, Artist artist)
         {
-            var artistUpdate = _musicContext.Artists.Find(id);
+            var artistUpdate = await _musicContext.Artists.FindAsync(id);
             if (artistUpdate == null)
                 return null;
 
             artistUpdate.Name = artist.Name;
             artistUpdate.DebutYear = artist.DebutYear;
-            
-            _musicContext.SaveChanges();
+
+            await _musicContext.SaveChangesAsync();
             return artistUpdate;
         }
 
-        public Artist? Delete(int id)
+        public async Task<Artist?> DeleteAsync(int id)
         {
-            var artist = _musicContext.Artists.FirstOrDefault(artist => artist.Id == id);
+            var artist = await _musicContext.Artists.FindAsync(id);
             if (artist == null)
                 return null;
-            
+
             _musicContext.Artists.Remove(artist);
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return artist;
         }
     }

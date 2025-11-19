@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DataAccessLayer.Repository
 {
-    public class RecordRepository: IGenericRepository<Record>
+    public class RecordRepository : IGenericRepository<Record>
     {
         private readonly MusicContext _musicContext;
-        
+
         public RecordRepository(MusicContext albumContext)
         {
             _musicContext = albumContext;
@@ -29,20 +29,20 @@ namespace DataAccessLayer.Repository
             ).ToList();
         }
 
-        public IEnumerable<Record> GetAll()
+        public async Task<IEnumerable<Record>> GetAllAsync()
         {
-            return _musicContext.Records
+            return await _musicContext.Records
                 .Include(r => r.Artists)
                 .Include(r => r.Tracks)
-                .ToList();
+                .ToListAsync();
         }
 
-        public Record? Get(int id)
+        public async Task<Record?> GetAsync(int id)
         {
-            var record = _musicContext.Records
+            var record = await _musicContext.Records
                 .Include(r => r.Artists)
                 .Include(r => r.Tracks)
-                .FirstOrDefault(record => record.Id == id);
+                .FirstOrDefaultAsync(record => record.Id == id);
 
             if (record == null)
                 return null;
@@ -50,7 +50,7 @@ namespace DataAccessLayer.Repository
             return record;
         }
 
-        public Record Add(Record record)
+        public async Task<Record> AddAsync(Record record)
         {
             var artists = GetArtists(record);
             var tracks = GetTracks(record);
@@ -59,22 +59,22 @@ namespace DataAccessLayer.Repository
             record.Tracks = tracks;
 
             _musicContext.Records.Add(record);
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return record;
         }
 
-        public Record? Update(int id, Record record)
+        public async Task<Record?> UpdateAsync(int id, Record record)
         {
-            var recordUpdate = _musicContext.Records.Find(id);
+            var recordUpdate = await _musicContext.Records.FindAsync(id);
             if (recordUpdate == null)
                 return null;
-            
+
             recordUpdate.Title = record.Title;
             recordUpdate.ReleaseDate = record.ReleaseDate;
             recordUpdate.Type = record.Type;
             recordUpdate.Artists.Clear();
             recordUpdate.Tracks.Clear();
-            
+
             var artists = GetArtists(record);
             foreach (var artist in artists)
                 recordUpdate.Artists.Add(artist);
@@ -83,18 +83,18 @@ namespace DataAccessLayer.Repository
             foreach (var track in tracks)
                 recordUpdate.Tracks.Add(track);
 
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return recordUpdate;
         }
 
-        public Record? Delete(int id)
+        public async Task<Record?> DeleteAsync(int id)
         {
-            var record = _musicContext.Records.FirstOrDefault(record => record.Id == id);
+            var record = await _musicContext.Records.FindAsync(id);
             if (record == null)
                 return null;
 
             _musicContext.Remove(record);
-            _musicContext.SaveChanges();
+            await _musicContext.SaveChangesAsync();
             return record;
         }
     }

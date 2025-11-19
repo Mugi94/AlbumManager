@@ -17,31 +17,31 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetArtists_WhenArtistExists_ShouldReturnList()
+        public async Task GetArtists_WhenArtistExists_ShouldReturnList()
         {
             var artists = new List<Artist> {
                 new(1, "Artist1", 2000, [], []),
                 new(2, "Artist2", 2025, [], [])
             };
 
-            _mockArtistRepository.Setup(a => a.GetAll()).Returns(artists);
-            var res = _artistManager.GetArtists();
+            _mockArtistRepository.Setup(a => a.GetAllAsync()).ReturnsAsync(artists);
+            var res = await _artistManager.GetArtistsAsync();
 
             Assert.NotEmpty(res);
             Assert.All(artists, a => Assert.Contains(a, res));
         }
 
         [Fact]
-        public void GetArtists_WhenNoArtistsExist_ShouldReturnEmptyList()
+        public async Task GetArtists_WhenNoArtistsExist_ShouldReturnEmptyList()
         {
-            _mockArtistRepository.Setup(a => a.GetAll()).Returns([]);
-            var res = _artistManager.GetArtists();
+            _mockArtistRepository.Setup(a => a.GetAllAsync()).ReturnsAsync([]);
+            var res = await _artistManager.GetArtistsAsync();
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void GetArtists_WhenDebutYearIsSpecified_ShouldReturnList()
+        public async Task GetArtists_WhenDebutYearIsSpecified_ShouldReturnList()
         {
             var artists = new List<Artist> {
                 new(1, "Artist1", 2000, [], []),
@@ -49,8 +49,8 @@ namespace Services.Test
                 new(3, "Artist3", 2025, [], [])
             };
 
-            _mockArtistRepository.Setup(a => a.GetAll()).Returns(artists);
-            var res = _artistManager.GetArtists(2025);
+            _mockArtistRepository.Setup(a => a.GetAllAsync()).ReturnsAsync(artists);
+            var res = await _artistManager.GetArtistsAsync(2025);
 
             Assert.NotEmpty(res);
             Assert.Equal(2, res.Count());
@@ -58,26 +58,26 @@ namespace Services.Test
         }
 
         [Fact]
-        public void GetArtists_WhenNoArtistsOfOneYear_ShouldReturnEmptyList()
+        public async Task GetArtists_WhenNoArtistsOfOneYear_ShouldReturnEmptyList()
         {
             var artists = new List<Artist> {
                 new(1, "Artist1", 2000, [], []),
                 new(2, "Artist2", 2000, [], [])
             };
 
-            _mockArtistRepository.Setup(a => a.GetAll()).Returns(artists);
-            var res = _artistManager.GetArtists(2025);
+            _mockArtistRepository.Setup(a => a.GetAllAsync()).ReturnsAsync(artists);
+            var res = await _artistManager.GetArtistsAsync(2025);
 
             Assert.Empty(res);
         }
 
         [Fact]
-        public void FindArtist_WhenArtistExists_ShouldReturnArtist()
+        public async Task FindArtist_WhenArtistExists_ShouldReturnArtist()
         {
             var artist = new Artist(1, "Artist", 2025, [], []);
 
-            _mockArtistRepository.Setup(a => a.Get(1)).Returns(artist);
-            var res = _artistManager.FindArtist(1);
+            _mockArtistRepository.Setup(a => a.GetAsync(1)).ReturnsAsync(artist);
+            var res = await _artistManager.FindArtistAsync(1);
 
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
@@ -86,21 +86,21 @@ namespace Services.Test
         }
 
         [Fact]
-        public void FindArtist_WhenArtistNotFound_ShouldReturnNull()
+        public async Task FindArtist_WhenArtistNotFound_ShouldReturnNull()
         {
-            _mockArtistRepository.Setup(a => a.Get(It.IsAny<int>())).Returns(value: null);
-            var res = _artistManager.FindArtist(1);
+            _mockArtistRepository.Setup(a => a.GetAsync(It.IsAny<int>())).ReturnsAsync(value: null);
+            var res = await _artistManager.FindArtistAsync(1);
 
             Assert.Null(res);
         }
 
         [Fact]
-        public void AddArtist_WhenArtistGiven_ShouldAddArtist()
+        public async Task AddArtist_WhenArtistGiven_ShouldAddArtist()
         {
             var artist = new Artist(1, "Artist", 2025, [], []);
-            _mockArtistRepository.Setup(a => a.Add(artist)).Returns(artist);
+            _mockArtistRepository.Setup(a => a.AddAsync(artist)).ReturnsAsync(artist);
 
-            var res = _artistManager.AddArtist(artist);
+            var res = await _artistManager.AddArtistAsync(artist);
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Artist", res.Name);
@@ -108,23 +108,23 @@ namespace Services.Test
         }
 
         [Fact]
-        public void AddArtist_WhenArtistAlreadyExists_ShouldReturnNull()
+        public async Task AddArtist_WhenArtistAlreadyExists_ShouldReturnNull()
         {
             var artist = new Artist(1, "Artist", 2025, [], []);
-            _mockArtistRepository.Setup(a => a.GetAll()).Returns([artist]);
-            _mockArtistRepository.Setup(a => a.Add(artist)).Returns((Artist a) => a);
+            _mockArtistRepository.Setup(a => a.GetAllAsync()).ReturnsAsync([artist]);
+            _mockArtistRepository.Setup(a => a.AddAsync(artist)).ReturnsAsync((Artist a) => a);
 
-            var res = _artistManager.AddArtist(artist);
+            var res = await _artistManager.AddArtistAsync(artist);
             Assert.Null(res);
         }
 
         [Fact]
-        public void DeleteArtist_WhenArtistExists_ShouldRemoveArtist()
+        public async Task DeleteArtist_WhenArtistExists_ShouldRemoveArtist()
         {
             var artist = new Artist(1, "Artist", 2025, [], []);
-            _mockArtistRepository.Setup(a => a.Delete(1)).Returns(artist);
+            _mockArtistRepository.Setup(a => a.DeleteAsync(1)).ReturnsAsync(artist);
 
-            var res = _artistManager.DeleteArtist(1);
+            var res = await _artistManager.DeleteArtistAsync(1);
             Assert.NotNull(res);
             Assert.Equal(1, res.Id);
             Assert.Equal("Artist", res.Name);
@@ -132,10 +132,10 @@ namespace Services.Test
         }
 
         [Fact]
-        public void DeleteArtist_WhenArtistNotFound_ShouldReturnNull()
+        public async Task DeleteArtist_WhenArtistNotFound_ShouldReturnNull()
         {
-            _mockArtistRepository.Setup(a => a.Delete(It.IsAny<int>())).Returns(value: null);
-            var res = _artistManager.DeleteArtist(1);
+            _mockArtistRepository.Setup(a => a.DeleteAsync(It.IsAny<int>())).ReturnsAsync(value: null);
+            var res = await _artistManager.DeleteArtistAsync(1);
 
             Assert.Null(res);
         }
