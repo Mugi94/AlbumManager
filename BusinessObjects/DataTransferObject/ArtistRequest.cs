@@ -1,8 +1,7 @@
 namespace BusinessObjects.DataTransferObject
 {
-    public class ArtistSummary
+    public class ArtistRequest
     {
-        public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public int DebutYear { get; set; }
     }

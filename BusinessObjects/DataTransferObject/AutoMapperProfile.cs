@@ -7,14 +7,34 @@ namespace BusinessObjects.DataTransferObject
     {
         public AutoMapperProfile()
         {
-            CreateMap<Artist, ArtistDto>();
-            CreateMap<ArtistDto, Artist>();
+            CreateMap<Artist, ArtistResponse>();
+            CreateMap<ArtistResponse, Artist>();
 
-            CreateMap<Track, TrackDto>();
-            CreateMap<TrackDto, Track>();
+            CreateMap<Artist, ArtistSummary>();
+            CreateMap<ArtistSummary, Artist>();
 
-            CreateMap<Record, RecordDto>();
-            CreateMap<RecordDto, Record>();
+            CreateMap<Artist, ArtistRequest>();
+            CreateMap<ArtistRequest, Artist>();
+
+
+            CreateMap<Track, TrackResponse>();
+            CreateMap<TrackResponse, Track>();
+
+            CreateMap<Track, TrackSummary>();
+            CreateMap<TrackSummary, Track>();
+
+            CreateMap<Track, TrackRequest>();
+            CreateMap<TrackRequest, Track>();
+
+
+            CreateMap<Record, RecordResponse>();
+            CreateMap<RecordResponse, Record>();
+
+            CreateMap<Record, RecordSummary>();
+            CreateMap<RecordSummary, Record>();
+
+            CreateMap<Record, RecordRequest>();
+            CreateMap<RecordRequest, Record>();
         }
     }
 }

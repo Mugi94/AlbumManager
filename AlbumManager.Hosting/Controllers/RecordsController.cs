@@ -31,7 +31,7 @@ namespace AlbumManager.Hosting.Controllers
             else
                 records = await _recordManager.GetRecordsAsync();
 
-            return Ok(records.Select(r => _mapper.Map<RecordDto>(r)));
+            return Ok(records.Select(r => _mapper.Map<RecordResponse>(r)));
         }
 
         // GET : records/{id}
@@ -44,23 +44,23 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<RecordDto>(record));
+            return Ok(_mapper.Map<RecordResponse>(record));
         }
 
         // PUT : records/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRecord(int id, RecordDto recordDto)
+        public async Task<IActionResult> UpdateRecord(int id, RecordRequest recordDto)
         {
             var record = await _recordManager.UpdateRecordAsync(id, _mapper.Map<Record>(recordDto));
             if (record == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<RecordDto>(record));
+            return Ok(_mapper.Map<RecordResponse>(record));
         }
 
         // POST : records
         [HttpPost()]
-        public async Task<IActionResult> AddRecord([FromBody] RecordDto recordDto)
+        public async Task<IActionResult> AddRecord([FromBody] RecordRequest recordDto)
         {
             var record = _mapper.Map<Record>(recordDto);
             var newRecord = await _recordManager.AddRecordAsync(record);
@@ -68,7 +68,7 @@ namespace AlbumManager.Hosting.Controllers
             if (newRecord == null)
                 return BadRequest($"{record.Title} already exists");
 
-            return CreatedAtAction(nameof(GetRecord), new { id = newRecord.Id }, _mapper.Map<RecordDto>(newRecord));
+            return CreatedAtAction(nameof(GetRecord), new { id = newRecord.Id }, _mapper.Map<RecordResponse>(newRecord));
         }
 
         // DELETE : records
@@ -81,7 +81,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<RecordDto>(record));
+            return Ok(_mapper.Map<RecordResponse>(record));
         }
     }
 }

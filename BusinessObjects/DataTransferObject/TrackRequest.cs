@@ -1,8 +1,7 @@
 namespace BusinessObjects.DataTransferObject
 {
-    public class TrackResponse
+    public class TrackRequest
     {
-        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public int Duration { get; set; }
 

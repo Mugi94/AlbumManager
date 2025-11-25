@@ -2,9 +2,8 @@ using BusinessObjects.Enum;
 
 namespace BusinessObjects.DataTransferObject
 {
-    public class RecordResponse
+    public class RecordRequest
     {
-        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public DateTime ReleaseDate { get; set; }
         public TypeRecord Type { get; set; }

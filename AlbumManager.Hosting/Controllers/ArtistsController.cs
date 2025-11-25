@@ -30,7 +30,7 @@ namespace AlbumManager.Hosting.Controllers
             else
                 artists = await _artistManager.GetArtistsAsync();
 
-            return Ok(artists.Select(a => _mapper.Map<ArtistDto>(a)));
+            return Ok(artists.Select(a => _mapper.Map<ArtistResponse>(a)));
         }
 
         // GET : artists/{id}
@@ -43,12 +43,12 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<ArtistDto>(artist));
+            return Ok(_mapper.Map<ArtistResponse>(artist));
         }
 
         // POST : artists
         [HttpPost()]
-        public async Task<IActionResult> AddArtist([FromBody] ArtistDto artistDto)
+        public async Task<IActionResult> AddArtist([FromBody] ArtistRequest artistDto)
         {
             var artist = _mapper.Map<Artist>(artistDto);
             var newArtist = await _artistManager.AddArtistAsync(artist);
@@ -56,18 +56,18 @@ namespace AlbumManager.Hosting.Controllers
             if (newArtist == null)
                 return BadRequest($"{artist.Name} already exists");
 
-            return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id }, _mapper.Map<ArtistDto>(newArtist));
+            return CreatedAtAction(nameof(GetArtist), new { id = newArtist.Id }, _mapper.Map<ArtistResponse>(newArtist));
         }
 
         // PUT : artists/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateArtist(int id, ArtistDto artistDto)
+        public async Task<IActionResult> UpdateArtist(int id, ArtistRequest artistDto)
         {
             var artist = await _artistManager.UpdateArtistAsync(id, _mapper.Map<Artist>(artistDto));
             if (artist == null)
                 return NotFound();
 
-            return Ok(_mapper.Map<ArtistDto>(artist));
+            return Ok(_mapper.Map<ArtistResponse>(artist));
         }
 
         // DELETE : artists/{id}
@@ -80,7 +80,7 @@ namespace AlbumManager.Hosting.Controllers
                 return NotFound();
             }
 
-            return Ok(_mapper.Map<ArtistDto>(artist));
+            return Ok(_mapper.Map<ArtistResponse>(artist));
         }
     }
 }
